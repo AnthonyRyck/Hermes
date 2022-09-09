@@ -5,10 +5,13 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>HermesWebAssembly.Server-334DA6E7-2917-4134-94D9-07F3FF90E5D7</UserSecretsId>
+    <Configurations>Debug;Release;RELEASEDOCKER</Configurations>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.Server" Version="6.0.8" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="6.0.2" />
+    <PackageReference Include="Serilog.Sinks.MySQL" Version="4.6.0" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,6 +26,15 @@
     <PackageReference Include="Microsoft.AspNetCore.ApiAuthorization.IdentityServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.8" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.8" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Data\Scripts\ConsultantsDb.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="Data\Scripts\UpdateConsultantsDb.sql">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

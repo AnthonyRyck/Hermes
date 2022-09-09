@@ -3,33 +3,45 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.3.32825.248
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HermesWebAssembly.Server", "HermesWebAssembly\Server\HermesWebAssembly.Server.csproj", "{BC5B6D7A-B741-4916-A080-02623F21B373}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HermesWebAssembly.Server", "HermesWebAssembly\Server\HermesWebAssembly.Server.csproj", "{BC5B6D7A-B741-4916-A080-02623F21B373}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HermesWebAssembly.Client", "HermesWebAssembly\Client\HermesWebAssembly.Client.csproj", "{B17B173A-894F-4EF2-AE68-91C941E4EA80}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HermesWebAssembly.Client", "HermesWebAssembly\Client\HermesWebAssembly.Client.csproj", "{B17B173A-894F-4EF2-AE68-91C941E4EA80}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HermesWebAssembly.Shared", "HermesWebAssembly\Shared\HermesWebAssembly.Shared.csproj", "{75525577-058B-40E0-9037-11039D19F48F}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HermesWebAssembly.Shared", "HermesWebAssembly\Shared\HermesWebAssembly.Shared.csproj", "{75525577-058B-40E0-9037-11039D19F48F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Server", "Server", "{C92DD90B-6E62-40F7-9AA1-52C1C857E707}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+		RELEASEDOCKER|Any CPU = RELEASEDOCKER|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{BC5B6D7A-B741-4916-A080-02623F21B373}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BC5B6D7A-B741-4916-A080-02623F21B373}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC5B6D7A-B741-4916-A080-02623F21B373}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC5B6D7A-B741-4916-A080-02623F21B373}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BC5B6D7A-B741-4916-A080-02623F21B373}.RELEASEDOCKER|Any CPU.ActiveCfg = RELEASEDOCKER|Any CPU
+		{BC5B6D7A-B741-4916-A080-02623F21B373}.RELEASEDOCKER|Any CPU.Build.0 = RELEASEDOCKER|Any CPU
 		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.RELEASEDOCKER|Any CPU.ActiveCfg = RELEASEDOCKER|Any CPU
+		{B17B173A-894F-4EF2-AE68-91C941E4EA80}.RELEASEDOCKER|Any CPU.Build.0 = RELEASEDOCKER|Any CPU
 		{75525577-058B-40E0-9037-11039D19F48F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{75525577-058B-40E0-9037-11039D19F48F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{75525577-058B-40E0-9037-11039D19F48F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{75525577-058B-40E0-9037-11039D19F48F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{75525577-058B-40E0-9037-11039D19F48F}.RELEASEDOCKER|Any CPU.ActiveCfg = RELEASEDOCKER|Any CPU
+		{75525577-058B-40E0-9037-11039D19F48F}.RELEASEDOCKER|Any CPU.Build.0 = RELEASEDOCKER|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BC5B6D7A-B741-4916-A080-02623F21B373} = {C92DD90B-6E62-40F7-9AA1-52C1C857E707}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5F3F27F6-E534-4A38-804F-E3838842B476}
