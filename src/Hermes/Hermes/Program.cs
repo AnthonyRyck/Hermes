@@ -1,12 +1,11 @@
-using Blazorise;
-using Blazorise.Bootstrap;
-using Blazorise.Icons.FontAwesome;
 using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.DataAccess;
+using Hermes.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor.Services;
 using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -45,15 +44,10 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 // Service de l'application
 builder.Services.AddSingleton(new HermesContext(connectionDb));
+builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 
-// Pour Blazorise
-builder.Services
-	.AddBlazorise(options =>
-	{
-		options.Immediate = true;
-	})
-	.AddBootstrapProviders()
-	.AddFontAwesomeIcons();
+// Pour MudBlazor
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 

@@ -2,6 +2,7 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
+using Hermes.Data;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -117,7 +118,7 @@ namespace Hermes.Areas.Identity.Pages.Account
 				{
 					_logger.LogInformation($"Nouvel utilisateur créé {Input.UserLogin}.");
 
-					await _userManager.AddToRoleAsync(user, "Member");
+					await _userManager.AddToRoleAsync(user, Role.Member.ToString());
 					return LocalRedirect(returnUrl);
 
 					// *********** Pour confirmer le compte avec un mail ***********
