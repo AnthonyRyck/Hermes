@@ -1,3 +1,6 @@
+using Blazorise;
+using Blazorise.Bootstrap;
+using Blazorise.Icons.FontAwesome;
 using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.DataAccess;
@@ -42,6 +45,15 @@ builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuth
 
 // Service de l'application
 builder.Services.AddSingleton(new HermesContext(connectionDb));
+
+// Pour Blazorise
+builder.Services
+	.AddBlazorise(options =>
+	{
+		options.Immediate = true;
+	})
+	.AddBootstrapProviders()
+	.AddFontAwesomeIcons();
 
 var app = builder.Build();
 
@@ -98,7 +110,7 @@ using (var scope = scopeFactory.CreateScope())
 	}
 
 	// Pour mettre à jour la base de donnée.
-	//string updateSql = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Data", "Script", "UpdateConsultantsDb.sql");
+	//string updateSql = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Script", "UpdateConsultantsDb.sql");
 	//await hermesCtx.UpdateDatabaseAsync(updateSql);
 }
 
