@@ -42,12 +42,13 @@ builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
+// Pour MudBlazor
+builder.Services.AddMudServices();
+
 // Service de l'application
 builder.Services.AddSingleton(new HermesContext(connectionDb));
 builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 
-// Pour MudBlazor
-builder.Services.AddMudServices();
 
 var app = builder.Build();
 

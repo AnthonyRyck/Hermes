@@ -1,0 +1,36 @@
+﻿<MudDialog>
+    <DialogContent>
+        <div>Rôle actuel : @RoleActuel</div>
+        <div>
+            <MudSelect Margin="@Margin.Dense" Required @bind-Value="RoleSelected">
+
+                @foreach (Role role in Enum.GetValues<Role>())
+                {
+                    if(role != Role.Admin)
+                    {
+                    <MudSelectItem Value="@role">@role.ToString()</MudSelectItem>
+                    }
+                }
+
+            </MudSelect>
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="Cancel">Annuler</MudButton>
+    </DialogActions>
+</MudDialog>
+
+@code {
+    [CascadingParameter] MudDialogInstance MudDialog { get; set; }
+
+    void Submit() => MudDialog.Close(DialogResult.Ok(RoleSelected));
+
+    void Cancel() => MudDialog.Cancel();
+
+    [Parameter]
+    public string RoleActuel { get; set; }
+
+    private Role RoleSelected;
+}

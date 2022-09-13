@@ -15,9 +15,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BlazorServer", "BlazorServe
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_Shared", "_Shared", "{55D1C344-5C24-43A1-9516-C3559923AD83}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes.DataAccess", "Hermes.DataAccess\Hermes.DataAccess.csproj", "{AC721432-72E5-4CB1-B865-F2D7366D3A32}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hermes.DataAccess", "Hermes.DataAccess\Hermes.DataAccess.csproj", "{AC721432-72E5-4CB1-B865-F2D7366D3A32}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Hermes", "Hermes\Hermes.csproj", "{2882DD45-F6B9-4148-B1B8-C698AE83710C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Hermes", "Hermes\Hermes.csproj", "{2882DD45-F6B9-4148-B1B8-C698AE83710C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

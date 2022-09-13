@@ -1,6 +1,8 @@
-﻿using Hermes.Data;
+﻿using Hermes.Components.Dialogs;
+using Hermes.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
+using MudBlazor;
 
 namespace Hermes.ViewModels
 {
@@ -16,20 +18,25 @@ namespace Hermes.ViewModels
 
 		public bool ShowResetMdp { get; set; }
 
+		public bool IsLoading { get; private set; }
+
 		public List<UserView> AllUsers { get; set; }
+
+		public Action StateHasChanged { get; private set; }
 
 		private string ManagerRole; //= "MANAGER";
 		private string MemberRole; //= "MEMBER";
 
-		private string IdUserToChangePassword { get; set; }
+		private IDialogService dialogService;
 
 		#endregion
 
 		#region Constructeur
 
-		public UsersViewModel(ApplicationDbContext appContext, UserManager<IdentityUser> userManager, NavigationManager navigation)
+		public UsersViewModel(ApplicationDbContext appContext, UserManager<IdentityUser> userManager, NavigationManager navigation, IDialogService dialogSvc)
 		{
 			ShowResetMdp = false;
+			dialogService = dialogSvc;
 
 			ManagerRole = Role.Manager.ToString().ToUpper();
 			MemberRole = Role.Member.ToString().ToUpper();
@@ -43,6 +50,58 @@ namespace Hermes.ViewModels
 
 		#endregion
 
+		public async Task LoadUsers()
+		{
+			try
+			{
+				AllUsers = new List<UserView>();
+
+				// Récupération des ids pour les rôles de membre et manager.
+				IEnumerable<string> idsRoles = AppContext.Roles.Where(x => x.NormalizedName == ManagerRole
+																		|| x.NormalizedName == MemberRole)
+																.Select(x => x.Id)
+																.ToList();
+
+				// Récupération des utilisateurs ayant pour ces rôles.
+				IEnumerable<string> idUserRole = AppContext.UserRoles.Where(x => idsRoles.Contains(x.RoleId))
+					.Select(x => x.UserId)
+					.ToList();
+
+				// Récupération des utilisateurs.
+				IEnumerable<IdentityUser> usersTemp = AppContext.Users.Where(x => idUserRole.Contains(x.Id)).ToList();
+
+				foreach (var user in usersTemp)
+				{
+					string roleId = AppContext.UserRoles.Where(x => x.UserId == user.Id)
+											.Select(x => x.RoleId)
+											.FirstOrDefault();
+
+					string role = AppContext.Roles.Where(x => x.Id == roleId)
+													.Select(x => x.NormalizedName)
+													.FirstOrDefault();
+
+					UserView userView = new UserView();
+					userView.IdUser = user.Id;
+					userView.UserName = user.UserName;
+					userView.Email = user.Email;
+					userView.Role = role;
+					userView.IdentityModel = user;
+
+					AllUsers.Add(userView);
+				}
+			}
+			catch (Exception exception)
+			{
+				Log.Error(exception, "GestionUserPage - Erreur dans la récupération de la liste des utilisateurs Membre et Manager.");
+				AllUsers = new List<UserView>();
+			}
+		}
+
+		public void SetStateHasChanged(Action stateHasChanged)
+		{
+			StateHasChanged = stateHasChanged;
+		}
+
 		/// <summary>
 		/// Au changement de rôle.
 		/// </summary>
@@ -52,23 +111,23 @@ namespace Hermes.ViewModels
 		{
 			try
 			{
-				var selectedValue = e.Value.ToString();
-				UserView currentUser = AllUsers.Where(x => x.User.Id == idUser).FirstOrDefault();
+				//var selectedValue = e.Value.ToString();
+				//UserView currentUser = AllUsers.Where(x => x.User.Id == idUser).FirstOrDefault();
 
-				if (string.IsNullOrEmpty(selectedValue))
-					return;
+				//if (string.IsNullOrEmpty(selectedValue))
+				//	return;
 
-				if (selectedValue == "Inactif")
-				{
-					UserManager.RemoveFromRoleAsync(currentUser.User, currentUser.Role);
-				}
-				else
-				{
-					UserManager.RemoveFromRoleAsync(currentUser.User, currentUser.Role);
-					UserManager.AddToRoleAsync(currentUser.User, selectedValue);
-				}
+				//if (selectedValue == "Inactif")
+				//{
+				//	UserManager.RemoveFromRoleAsync(currentUser.User, currentUser.Role);
+				//}
+				//else
+				//{
+				//	UserManager.RemoveFromRoleAsync(currentUser.User, currentUser.Role);
+				//	UserManager.AddToRoleAsync(currentUser.User, selectedValue);
+				//}
 
-				AllUsers = GetAllUser().ToList();
+				//AllUsers = GetAllUser().ToList();
 			}
 			catch (Exception ex)
 			{
@@ -79,49 +138,77 @@ namespace Hermes.ViewModels
 
 		public void DeleteUser(string idUser)
 		{
-			if (AppContext.Users.Any(x => x.Id == idUser))
+			//if (AppContext.Users.Any(x => x.Id == idUser))
+			//{
+			//	var user = AppContext.Users.FirstOrDefault(x => x.Id == idUser);
+
+			//	AppContext.Users.Remove(user);
+			//	AppContext.SaveChanges();
+
+			//	AllUsers.RemoveAll(x => x.User.Id == idUser);
+			//}
+		}
+
+		public async void ResetChangeMdp(string idUser)
+		{
+			string login = await SetNewPassword(idUser, "Azerty123!");
+			
+			var parameters = new DialogParameters();
+			parameters.Add("LoginUser", login);
+
+			var options = new DialogOptions { CloseOnEscapeKey = true };
+
+			dialogService.Show<ResetPasswordDialog>("Réinitialisation du mot de passe", parameters, options);
+		}
+
+		public async void EditUser(string idUser)
+		{
+			UserView userSelected = AllUsers.FirstOrDefault(x => x.IdUser == idUser);
+
+			var parameters = new DialogParameters();
+			parameters.Add("RoleActuel", userSelected.Role);
+
+			var options = new DialogOptions { CloseOnEscapeKey = true };
+			var dialog = dialogService.Show<ChangeRoleDialog>("Changement de rôle", parameters, options);
+			var result = await dialog.Result;
+
+			if(!result.Cancelled)
 			{
-				var user = AppContext.Users.FirstOrDefault(x => x.Id == idUser);
+				Role roleSelected = (Role)result.Data;
 
-				AppContext.Users.Remove(user);
-				AppContext.SaveChanges();
+				// Faire la sauvegarde
+				await UserManager.RemoveFromRoleAsync(userSelected.IdentityModel, userSelected.Role);
+				await UserManager.AddToRoleAsync(userSelected.IdentityModel, roleSelected.ToString());
 
-				AllUsers.RemoveAll(x => x.User.Id == idUser);
+				userSelected.Role = roleSelected.ToString().ToUpper();
+				StateHasChanged.Invoke();
 			}
 		}
 
-		public void OpenChangeMdp(string idUser)
-		{
-			ShowResetMdp = true;
-			IdUserToChangePassword = idUser;
-		}
+		#region Private Methods
 
-		public void CancelChangeMdp()
-		{
-			IdUserToChangePassword = string.Empty;
-			ShowResetMdp = false;
-		}
-
-
-		public async Task SetNewPassword(string newPassword)
+		private async Task<string> SetNewPassword(string idUser, string newPassword)
 		{
 			ShowResetMdp = false;
+			string loginUser = string.Empty;
 
 			try
 			{
-				IdentityUser userSelected = AppContext.Users.Where(x => x.Id == IdUserToChangePassword).FirstOrDefault();
+				IdentityUser userSelected = AppContext.Users.Where(x => x.Id == idUser).FirstOrDefault();
+
 				await UserManager.RemovePasswordAsync(userSelected);
 				await UserManager.AddPasswordAsync(userSelected, newPassword);
+
+				loginUser = userSelected.UserName;
 			}
 			catch (Exception)
 			{
 				Log.Error("Erreur sur REINIT de mot de passe");
 			}
 
-			IdUserToChangePassword = string.Empty;
+			return loginUser;
 		}
 
-		#region Private Methods
 
 		/// <summary>
 		/// Retourne la liste des Managers et des membres.
@@ -158,7 +245,9 @@ namespace Hermes.ViewModels
 													.FirstOrDefault();
 
 					UserView userView = new UserView();
-					userView.User = user;
+					userView.IdUser = user.Id;
+					userView.UserName = user.UserName;
+					user.Email = user.Email;
 					userView.Role = role;
 
 					usersList.Add(userView);
@@ -177,8 +266,12 @@ namespace Hermes.ViewModels
 
 	public class UserView
 	{
-		public IdentityUser User { get; set; }
-
+		public string IdUser { get; set; }
+		public string UserName { get; set; }
+		public string Email { get; set; }
+		
 		public string Role { get; set; }
+
+		public IdentityUser IdentityModel { get; set; }
 	}
 }

@@ -10,14 +10,16 @@ namespace Hermes.ViewModels
 		UserManager<IdentityUser> UserManager { get; set; }
 		bool ShowResetMdp { get; set; }
 
-		void OnChangeRole(ChangeEventArgs e, string idUser);
+		bool IsLoading { get; }
+
+		Task LoadUsers();
+
+		void SetStateHasChanged(Action stateHasChanged);
 
 		void DeleteUser(string idUser);
 
-		void OpenChangeMdp(string idUser);
+		void ResetChangeMdp(string idUser);
 
-		void CancelChangeMdp();
-
-		Task SetNewPassword(string newPassword);
+		void EditUser(string idUser);
 	}
 }

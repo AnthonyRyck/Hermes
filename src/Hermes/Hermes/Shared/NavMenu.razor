@@ -8,22 +8,15 @@
 </div>
 
 <div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Accueil
-            </NavLink>
-
-            <AuthorizeView Roles="Admin, Manager">
-                <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                    <span class="oi oi-home" aria-hidden="true"></span> Utilisateurs
-                </NavLink>
-            </AuthorizeView>
-
-             <span class="oi oi-home" aria-hidden="true"></span> Utilisateurs
-        </div>
+    <MudNavMenu Class="mud-width-full">
+        <MudNavLink Href="" Icon="@Icons.Filled.Home">Accueil</MudNavLink>
         
-    </nav>
+        <AuthorizeView Roles="Admin, Manager">
+            <MudNavGroup Title="Paramètres" Icon="@Icons.Filled.Settings">
+                <MudNavLink Href="users" Icon="@Icons.Filled.SupervisorAccount" IconColor="Color.Info">Utilisateurs</MudNavLink>
+            </MudNavGroup>
+        </AuthorizeView>
+    </MudNavMenu>
 </div>
 
 @code {

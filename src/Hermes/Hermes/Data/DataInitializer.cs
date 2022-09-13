@@ -14,10 +14,6 @@ namespace Hermes.Data
 
 			foreach (var role in roles)
 			{
-				// User est juste pour l'affichage.
-				if (role == Role.SansRole.ToString())
-					continue;
-
 				if (!await roleManager.RoleExistsAsync(role))
 				{
 					await roleManager.CreateAsync(new IdentityRole(role));

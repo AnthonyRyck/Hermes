@@ -1,58 +1,61 @@
-﻿@inject IUsersViewModel viewModel 
+﻿@page "/users"
+@inject IUsersViewModel viewModel 
 @attribute [Authorize(Roles = "Admin, Manager")]
 
 <h3>Gestion des utilisateurs</h3>
 
-<table class="table">
+@if(viewModel.IsLoading)
+{
+	<div>Chargement des utilisateurs...</div>
+}
+else
+{
+<MudDataGrid T="UserView" 
+			MultiSelection="false"
+			 Items="@viewModel.AllUsers" 
+			 SortMode="SortMode.Multiple" 
+			 Filterable="true"
+			 Striped="true"
+			 Bordered="true"
+			 ReadOnly="true"
+			 EditMode=" DataGridEditMode.Form">
 
-	<thead>
-		<tr>
-			<th>
-				Nom utilisateur
-			</th>
-			<th>
-				Email
-			</th>
-			<th>Rôle actuel</th>
-			<th>Nouveau rôle</th>
-			<th></th>
-		</tr>
-	</thead>
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Liste des utilisateurs</MudText>
+    </ToolBarContent>
+		
+    <Columns>
+		<Column T="UserView" Field="UserName" Title="Login" Sortable="true" Filterable="false" />
+		<Column T="UserView" Field="Email" Title="Email" Sortable="false" Filterable="false" />
+		<Column T="UserView" Field="Role" Title="Role" Sortable="true" Filterable="false" />
 
-	<tbody>
-		@foreach (var item in viewModel.AllUsers)
-		{
-			<tr>
-				<td>
-					@item.User.UserName
-				</td>
-				<td>
-					@item.User.Email
-				</td>
-				<td>
-					@item.Role
-				</td>
-				<td>
-					<select name="selectRole" @onchange="@(e =>  viewModel.OnChangeRole(e, item.User.Id))">
-						<option value=""></option>
-						<option value="Member">Member</option>
-						<option value="Manager">Manager</option>
-						<option value="Admin">Admin</option>
-						<option value="Inactif">Inactif</option>
-					</select>
-				</td>
-				<td>
-					<button @onclick="(() => viewModel.OpenChangeMdp(item.User.Id))">
-						Réinit MDP
-					</button>
-				</td>
-				<td>
-					<button class="btn btn-link"
-							@onclick="(() => viewModel.DeleteUser(item.User.Id))">
-						Supprimer
-					</button>
-				</td>
-			</tr>
-		}
-	</tbody>
-</table>
+		<Column T="UserView" Filterable="false" Title="Edit rôle">
+			<CellTemplate>
+				<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@(e => viewModel.EditUser(context.Item.IdUser))" />
+			</CellTemplate>
+		</Column>
+
+		<Column T="UserView" Title="Reset MDP" Sortable="false" Filterable="false">
+            <CellTemplate>
+				<MudTooltip Text="Réinitialise le mot de passe">
+					<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.LockReset" OnClick="@(e =>  viewModel.ResetChangeMdp(context.Item.IdUser))" />
+				</MudTooltip>
+            </CellTemplate>
+        </Column>
+    </Columns>
+
+@*    <PagerContent>
+
+        <MudDataGridPager T="Element" />
+    </PagerContent>*@
+</MudDataGrid>
+}
+
+@code{
+
+	protected override async Task OnInitializedAsync()
+	{
+		await viewModel.LoadUsers();
+		viewModel.SetStateHasChanged(StateHasChanged);
+	}
+}
