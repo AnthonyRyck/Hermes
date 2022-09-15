@@ -1,0 +1,56 @@
+﻿@using ValidationModels
+
+<EditForm EditContext="@EditContextValidation" Context="PourNewTech">
+<MudDialog>
+    <DialogContent>
+        <DataAnnotationsValidator />
+
+        <div>Ajout d'une nouvelle technologie</div>
+		
+        <div>
+            <div>
+                <ValidationMessage For="@(() => TechnoForm.Nom)" />
+            </div>
+            <MudTextField @bind-Value="TechnoForm.Nom"
+                          Label="Nom de la nouvelle technologie"
+                          Variant="Variant.Outlined"></MudTextField>
+        </div>
+
+        <div>
+            <div>
+                <ValidationMessage For="@(() => TechnoForm.Commentaire)" />
+            </div>
+            <MudTextField @bind-Value="TechnoForm.Commentaire"
+                          Label="Commentaire (optionnel)"
+                          Variant="Variant.Outlined"></MudTextField>
+        </div>
+    </DialogContent>
+
+    <DialogActions>
+        <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+        <MudButton Color="Color.Secondary" OnClick="Cancel">Annuler</MudButton>
+    </DialogActions>
+	
+</MudDialog>
+</EditForm>
+
+@code 
+{
+    [CascadingParameter] 
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public TechnoValidation TechnoForm { get; set; }
+
+	[Parameter]
+	public EditContext EditContextValidation { get; set; }
+	
+    
+    void Submit()
+    {
+		if(EditContextValidation.Validate())
+		    MudDialog.Close(DialogResult.Ok(TechnoForm));
+    }
+    
+    void Cancel() => MudDialog.Cancel();
+}

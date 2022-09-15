@@ -5,6 +5,7 @@ using Hermes.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MudBlazor;
 using MudBlazor.Services;
 using System.Globalization;
 
@@ -43,12 +44,23 @@ builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<AuthenticationStateProvider, RevalidatingIdentityAuthenticationStateProvider<IdentityUser>>();
 
 // Pour MudBlazor
-builder.Services.AddMudServices();
+builder.Services.AddMudServices(config => 
+{
+	config.SnackbarConfiguration.PositionClass = Defaults.Classes.Position.BottomLeft;
+
+	config.SnackbarConfiguration.PreventDuplicates = false;
+	config.SnackbarConfiguration.NewestOnTop = false;
+	config.SnackbarConfiguration.ShowCloseIcon = true;
+	config.SnackbarConfiguration.VisibleStateDuration = 10000;
+	config.SnackbarConfiguration.HideTransitionDuration = 500;
+	config.SnackbarConfiguration.ShowTransitionDuration = 500;
+	config.SnackbarConfiguration.SnackbarVariant = Variant.Filled;
+});
 
 // Service de l'application
-builder.Services.AddSingleton(new HermesContext(connectionDb));
+builder.Services.AddSingleton<IHermesContext>(new HermesContext(connectionDb));
 builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
-
+builder.Services.AddScoped<ITechnosViewModel, TechnosViewModel>();
 
 var app = builder.Build();
 

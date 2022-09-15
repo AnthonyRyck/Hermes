@@ -25,6 +25,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Hermes.DataAccess\Hermes.DataAccess.csproj" />
+    <ProjectReference Include="..\Hermes.Models\Hermes.Models.csproj" />
   </ItemGroup>
 
 </Project>

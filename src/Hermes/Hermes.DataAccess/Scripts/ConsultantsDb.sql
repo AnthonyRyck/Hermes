@@ -21,6 +21,7 @@ create table if not exists consultants
 nom varchar(100) not null,
 prenom varchar(100) not null,
 photo mediumblob,
+minicv mediumblob,
 primary key(id));
 
 CREATE TABLE IF NOT EXISTS consultantcompetences

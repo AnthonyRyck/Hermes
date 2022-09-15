@@ -11,6 +11,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Hermes.Models\Hermes.Models.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="Scripts\ConsultantsDb.sql">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

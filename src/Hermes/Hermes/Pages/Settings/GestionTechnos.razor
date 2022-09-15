@@ -1,0 +1,50 @@
+﻿@page "/technos"
+@inject ITechnosViewModel viewModel
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+@if (viewModel.IsLoading)
+{
+	<div>Chargement de la liste des technos...</div>
+}
+else
+{
+<MudDataGrid T="Techno"
+	 MultiSelection="false"
+	 Items="@viewModel.AllTechnos"
+	 Filterable="true"
+	 Striped="true"
+	 Bordered="true"
+	 ReadOnly="true"
+	 EditMode=" DataGridEditMode.Form">
+
+	<ToolBarContent>
+		<MudText Typo="Typo.h6">Liste des technos</MudText>
+
+		<MudTooltip Text="Ajouter une nouvelle techno">
+			<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Success" OnClick="@viewModel.AddNewTechno" />
+		</MudTooltip>
+				
+		@*<MudSpacer />
+		<MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
+					  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>*@
+	</ToolBarContent>
+
+	<Columns>
+		<Column T="Techno" Field="NomTech" Title="Nom" Sortable="true" Filterable="false" />
+		<Column T="Techno" Field="Commentaire" Title="Commentaire" Sortable="false" Filterable="false" />
+		
+		<Column T="Techno" Filterable="false" Title="Edition">
+			<CellTemplate>
+				<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@(e => viewModel.Edit(context.Item.Id))" />
+			</CellTemplate>
+		</Column>
+	</Columns>
+</MudDataGrid>
+}
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await viewModel.LoadTechnos();
+	}
+}
