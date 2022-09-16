@@ -33,12 +33,16 @@ else
 		<Column T="Techno" Field="NomTech" Title="Nom" Sortable="true" Filterable="false" />
 		<Column T="Techno" Field="Commentaire" Title="Commentaire" Sortable="false" Filterable="false" />
 		
-		<Column T="Techno" Filterable="false" Title="Edition">
+		<Column T="Techno" Filterable="false" Title="Edition" Sortable="false">
 			<CellTemplate>
 				<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@(e => viewModel.Edit(context.Item.Id))" />
 			</CellTemplate>
 		</Column>
 	</Columns>
+
+	<PagerContent>
+		<MudDataGridPager T="Techno" RowsPerPageString="Ligne par page:" />
+    </PagerContent>
 </MudDataGrid>
 }
 

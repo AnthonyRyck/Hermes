@@ -5,14 +5,14 @@
     <DialogContent>
         <DataAnnotationsValidator />
 
-        <div>Ajout d'une nouvelle technologie</div>
+        <div>Technologie</div>
 		
         <div>
             <div>
                 <ValidationMessage For="@(() => TechnoForm.Nom)" />
             </div>
             <MudTextField @bind-Value="TechnoForm.Nom"
-                          Label="Nom de la nouvelle technologie"
+                          Label="Nom de la technologie"
                           Variant="Variant.Outlined"></MudTextField>
         </div>
 

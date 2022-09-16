@@ -61,6 +61,7 @@ builder.Services.AddMudServices(config =>
 builder.Services.AddSingleton<IHermesContext>(new HermesContext(connectionDb));
 builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 builder.Services.AddScoped<ITechnosViewModel, TechnosViewModel>();
+builder.Services.AddScoped<ICompetenceViewModel, CompetenceViewModel>();
 
 var app = builder.Build();
 

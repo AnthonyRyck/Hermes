@@ -1,0 +1,56 @@
+﻿@using ValidationModels
+
+<EditForm EditContext="@EditContextValidation" Context="PourCompetence">
+    <MudDialog>
+        <DialogContent>
+            <DataAnnotationsValidator />
+
+            <div>Compétence</div>
+
+            <div>
+                <div>
+                    <ValidationMessage For="@(() => ValidationForm.Nom)" />
+                </div>
+                <MudTextField @bind-Value="ValidationForm.Nom"
+                              Label="Nom de la compétence"
+                              Variant="Variant.Outlined"></MudTextField>
+            </div>
+
+            <div>
+                <div>
+                    <ValidationMessage For="@(() => ValidationForm.Commentaire)" />
+                </div>
+                <MudTextField @bind-Value="ValidationForm.Commentaire"
+                              Label="Commentaire (optionnel)"
+                              Variant="Variant.Outlined"></MudTextField>
+            </div>
+        </DialogContent>
+
+        <DialogActions>
+            <MudButton Color="Color.Primary" OnClick="Submit">Ok</MudButton>
+            <MudButton Color="Color.Secondary" OnClick="Cancel">Annuler</MudButton>
+        </DialogActions>
+
+    </MudDialog>
+</EditForm>
+
+@code
+{
+    [CascadingParameter]
+    MudDialogInstance MudDialog { get; set; }
+
+    [Parameter]
+    public CompetenceValidation ValidationForm { get; set; }
+
+    [Parameter]
+    public EditContext EditContextValidation { get; set; }
+
+
+    void Submit()
+    {
+        if (EditContextValidation.Validate())
+            MudDialog.Close(DialogResult.Ok(ValidationForm));
+    }
+
+    void Cancel() => MudDialog.Cancel();
+}

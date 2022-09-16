@@ -17,6 +17,8 @@ namespace Hermes.DataAccess
 			ConnectionString = connectionString;
 		}
 
+		#region Creation/update des tables
+
 		/// <summary>
 		/// Permet de créer les tables pour le blog
 		/// </summary>
@@ -51,6 +53,8 @@ namespace Hermes.DataAccess
 				throw;
 			}
 		}
+		
+		#endregion
 
 		#region Technos Table
 
@@ -70,11 +74,13 @@ namespace Hermes.DataAccess
 				{
 					while (reader.Read())
 					{
+						object tempContent = reader.GetValue(2);
+
 						allTechnos.Add(new Techno
 						{
 							Id = reader.GetUInt32(0),
 							NomTech = reader.GetString(1),
-							Commentaire = reader.GetString(2)
+							Commentaire = ConvertFromDBVal<string>(tempContent)
 						});
 					}
 				}
@@ -151,6 +157,93 @@ namespace Hermes.DataAccess
 
 		#endregion
 
+		#region Competences Table
+		
+		public async Task<List<Competence>> LoadCompetences()
+		{
+			var commandText = @"SELECT id, nom, commentaire "
+				 + "FROM competences;";
+
+			Func<MySqlCommand, Task<List<Competence>>> funcCmd = async (cmd) =>
+			{
+				List<Competence> allCompetences = new List<Competence>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						object tempContent = reader.GetValue(2);
+
+						allCompetences.Add(new Competence
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Commentaire = ConvertFromDBVal<string>(tempContent)
+						});
+					}
+				}
+
+				return allCompetences;
+			};
+
+			List<Competence> allCompetences = new List<Competence>();
+			try
+			{
+				allCompetences = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return allCompetences;
+		}
+
+		public async Task Add(Competence newCompetence)
+		{
+			try
+			{
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					string command = "INSERT INTO competences (nom, commentaire) VALUES (@nom, @commentaire);";
+
+					using (var cmd = new MySqlCommand(command, conn))
+					{
+						cmd.Parameters.AddWithValue("@nom", newCompetence.Nom);
+						cmd.Parameters.AddWithValue("@commentaire", newCompetence.Commentaire);
+
+						conn.Open();
+						await cmd.ExecuteNonQueryAsync();
+						conn.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public async Task Update(Competence competence)
+		{
+			using (var conn = new MySqlConnection(ConnectionString))
+			{
+				var commandUpdateCompetence = @$"UPDATE competences SET nom=@nom, commentaire=@commentaire"
+									  + $" WHERE id={competence.Id};";
+
+				using (var cmd = new MySqlCommand(commandUpdateCompetence, conn))
+				{
+					cmd.Parameters.AddWithValue("@nom", competence.Nom);
+					cmd.Parameters.AddWithValue("@commentaire", competence.Commentaire);
+
+					conn.Open();
+					await cmd.ExecuteNonQueryAsync();
+					conn.Close();
+				}
+			}
+		}
+
+		#endregion
+
 		#region Private methods
 
 		/// <summary>
@@ -196,6 +289,24 @@ namespace Hermes.DataAccess
 			}
 
 			return result;
+		}
+
+		/// <summary>
+		/// Permet de gérer les retours de valeur null de la BDD
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="obj"></param>
+		/// <returns></returns>
+		private static T ConvertFromDBVal<T>(object obj)
+		{
+			if (obj == null || obj == DBNull.Value)
+			{
+				return default(T);
+			}
+			else
+			{
+				return (T)obj;
+			}
 		}
 
 		#endregion

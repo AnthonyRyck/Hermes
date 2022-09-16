@@ -3,9 +3,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Hermes.ValidationModels
 {
-	public class TechnoValidation
-	{
-		[Required(ErrorMessage = "Il faut un nom de technologie")]
+    public class CompetenceValidation
+    {
+		[Required(ErrorMessage = "Il faut un nom de compétence")]
 		[MaxLength(100, ErrorMessage = "Maximum 100 caractères")]
 		public string Nom { get; set; }
 
@@ -13,14 +13,14 @@ namespace Hermes.ValidationModels
 		public string Commentaire { get; set; }
 	}
 
-	public static class TechnoValidationExtension
+	public static class CompetenceValidationExtension
 	{
-		public static Techno ToTechno(this TechnoValidation techno)
+		public static Competence ToCompetence(this CompetenceValidation competence)
 		{
-			return new Techno
+			return new Competence
 			{
-				NomTech = techno.Nom,
-				Commentaire = techno.Commentaire
+				Nom = competence.Nom,
+				Commentaire = competence.Commentaire
 			};
 		}
 	}

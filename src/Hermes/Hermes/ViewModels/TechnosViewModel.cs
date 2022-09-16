@@ -54,11 +54,12 @@ namespace Hermes.ViewModels
 
 				if (!result.Cancelled)
 				{
-					var newTechno = ((TechnoValidation)result.Data).ToValidation();
+					var newTechno = ((TechnoValidation)result.Data).ToTechno();
 					await DbContext.Add(newTechno);
 
 					AllTechnos.Add(newTechno);
-					Success($"Techno {newTechno.NomTech} ajoutée", $"Techno {newTechno.NomTech} ajoutée");
+					string message = $"Techno {newTechno.NomTech} ajoutée";
+					Success(message, message);
 				}
 			}
 			catch (Exception ex)
