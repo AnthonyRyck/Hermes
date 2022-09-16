@@ -1,7 +1,6 @@
 using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.DataAccess;
-using Hermes.ViewModels;
 using Hermes.ViewModels.Settings;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;

@@ -5,7 +5,7 @@ using Hermes.ValidationModels;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
-namespace Hermes.ViewModels
+namespace Hermes.ViewModels.Settings
 {
 	public class CompetenceViewModel : BaseViewModel, ICompetenceViewModel
 	{
@@ -13,7 +13,7 @@ namespace Hermes.ViewModels
 		private readonly IDialogService DialogService;
 		private EditContext EditContextValidation;
 
-		public CompetenceViewModel(IHermesContext contextHermes, ISnackbar snackbar, IDialogService dialogService) 
+		public CompetenceViewModel(IHermesContext contextHermes, ISnackbar snackbar, IDialogService dialogService)
 			: base(contextHermes, snackbar)
 		{
 			DialogService = dialogService;
