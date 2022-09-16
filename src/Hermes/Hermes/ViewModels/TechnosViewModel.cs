@@ -9,7 +9,7 @@ namespace Hermes.ViewModels
 {
 	public class TechnosViewModel : BaseViewModel, ITechnosViewModel
 	{
-		private TechnoValidation TechnoValidation;
+		private ReferencielValidation TechnoValidation;
 		private readonly IDialogService DialogService;
 		private EditContext EditContextValidation;
 
@@ -54,7 +54,7 @@ namespace Hermes.ViewModels
 
 				if (!result.Cancelled)
 				{
-					var newTechno = ((TechnoValidation)result.Data).ToTechno();
+					var newTechno = ((ReferencielValidation)result.Data).ToTechno();
 					await DbContext.Add(newTechno);
 
 					AllTechnos.Add(newTechno);
@@ -73,7 +73,7 @@ namespace Hermes.ViewModels
 		public async Task Edit(uint idTecho)
 		{
 			Techno technSelected = AllTechnos.Find(t => t.Id == idTecho);
-			TechnoValidation technoToEdit = new TechnoValidation()
+			ReferencielValidation technoToEdit = new ReferencielValidation()
 			{
 				Nom = technSelected.NomTech,
 				Commentaire = technSelected.Commentaire
@@ -84,7 +84,7 @@ namespace Hermes.ViewModels
 
 			if (!result.Cancelled)
 			{
-				var resultValidation = (TechnoValidation)result.Data;
+				var resultValidation = (ReferencielValidation)result.Data;
 				
 				technSelected.NomTech = resultValidation.Nom;
 				technSelected.Commentaire = resultValidation.Commentaire;
@@ -100,11 +100,11 @@ namespace Hermes.ViewModels
 
 		private void InitValidation()
 		{
-			TechnoValidation = new TechnoValidation();
+			TechnoValidation = new ReferencielValidation();
 			EditContextValidation = new EditContext(TechnoValidation);
 		}
 
-		private Task<DialogResult> OpenDialog(string titre, TechnoValidation modelValidation)
+		private Task<DialogResult> OpenDialog(string titre, ReferencielValidation modelValidation)
 		{
 			var parameters = new DialogParameters();
 			parameters.Add("TechnoForm", modelValidation);

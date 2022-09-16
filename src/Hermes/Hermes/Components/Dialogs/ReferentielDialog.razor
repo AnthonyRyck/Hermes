@@ -1,27 +1,27 @@
 ﻿@using ValidationModels
 
-<EditForm EditContext="@EditContextValidation" Context="PourNewTech">
+<EditForm EditContext="@EditContextValidation" Context="PourNewRef">
 <MudDialog>
     <DialogContent>
         <DataAnnotationsValidator />
 
-        <div>Technologie</div>
+        <div>@Titre</div>
 		
         <div>
             <div>
-                <ValidationMessage For="@(() => TechnoForm.Nom)" />
+                <ValidationMessage For="@(() => ValidForm.Nom)" />
             </div>
-            <MudTextField @bind-Value="TechnoForm.Nom"
-                          Label="Nom de la technologie"
+            <MudTextField @bind-Value="ValidForm.Nom"
+                          Label="Donner un nom..."
                           Variant="Variant.Outlined"></MudTextField>
         </div>
 
         <div>
             <div>
-                <ValidationMessage For="@(() => TechnoForm.Commentaire)" />
+                <ValidationMessage For="@(() => ValidForm.Commentaire)" />
             </div>
-            <MudTextField @bind-Value="TechnoForm.Commentaire"
-                          Label="Commentaire (optionnel)"
+            <MudTextField @bind-Value="ValidForm.Commentaire"
+                          Label="Commentaire (optionnel)..."
                           Variant="Variant.Outlined"></MudTextField>
         </div>
     </DialogContent>
@@ -40,16 +40,18 @@
     MudDialogInstance MudDialog { get; set; }
 
     [Parameter]
-    public ReferencielValidation TechnoForm { get; set; }
+    public ReferencielValidation ValidForm { get; set; }
 
 	[Parameter]
 	public EditContext EditContextValidation { get; set; }
 	
+    [Parameter]
+    public string Titre { get; set; }
     
     void Submit()
     {
 		if(EditContextValidation.Validate())
-		    MudDialog.Close(DialogResult.Ok(TechnoForm));
+		    MudDialog.Close(DialogResult.Ok(ValidForm));
     }
     
     void Cancel() => MudDialog.Cancel();

@@ -1,0 +1,55 @@
+﻿@page "/societes"
+@inject ISocieteViewModel viewModel
+@attribute [Authorize(Roles = "Admin, Manager")]
+
+@if (viewModel.IsLoading)
+{
+	<div>Chargement des données...</div>
+}
+else
+{
+	<MudDataGrid T="Societe"
+			 MultiSelection="false"
+			 Items="@viewModel.AllData"
+			 Filterable="true"
+			 QuickFilter="@viewModel.QuickFilter"
+			 Striped="true"
+			 Bordered="true"
+			 ReadOnly="true"
+			 EditMode=" DataGridEditMode.Form">
+
+		<ToolBarContent>
+			<MudText Typo="Typo.h6">Liste des sociétés</MudText>
+
+			<MudTooltip Text="Ajouter une nouvelle compétence">
+				<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Success" OnClick="@viewModel.AddNew" />
+			</MudTooltip>
+
+			<MudSpacer />
+			<MudTextField @bind-Value="viewModel.RechercheItem" Placeholder="Recherche" Adornment="Adornment.Start" Immediate="true"
+					  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
+		</ToolBarContent>
+
+		<Columns>
+			<Column T="Societe" Field="Nom" Title="Nom" Sortable="true" Filterable="false" />
+			<Column T="Societe" Field="Commentaire" Title="Commentaire" Sortable="false" Filterable="false" />
+
+			<Column T="Societe" Filterable="false" Sortable="false" Title="Edition">
+				<CellTemplate>
+					<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@(e => viewModel.Edit(context.Item.IdSociete))" />
+				</CellTemplate>
+			</Column>
+		</Columns>
+
+		<PagerContent>
+			<MudDataGridPager T="Societe" RowsPerPageString="Ligne par page:" />
+		</PagerContent>
+	</MudDataGrid>
+}
+
+@code {
+	protected override async Task OnInitializedAsync()
+	{
+		await viewModel.Load();
+	}
+}

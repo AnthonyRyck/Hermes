@@ -1,10 +1,5 @@
 ﻿using Hermes.Models;
 using MySqlConnector;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Hermes.DataAccess
 {
@@ -121,6 +116,7 @@ namespace Hermes.DataAccess
 
 						conn.Open();
 						await cmd.ExecuteNonQueryAsync();
+						newTechno.Id = await GetLastIdAsync(cmd);
 						conn.Close();
 					}
 				}
@@ -213,6 +209,7 @@ namespace Hermes.DataAccess
 
 						conn.Open();
 						await cmd.ExecuteNonQueryAsync();
+						newCompetence.Id = await GetLastIdAsync(cmd);
 						conn.Close();
 					}
 				}
@@ -241,6 +238,95 @@ namespace Hermes.DataAccess
 				}
 			}
 		}
+
+		#endregion
+
+		#region Societes Table
+		
+		public async Task<List<Societe>> LoadSocietes()
+		{
+			var commandText = @"SELECT id, nom, commentaire "
+				 + "FROM societes;";
+
+			Func<MySqlCommand, Task<List<Societe>>> funcCmd = async (cmd) =>
+			{
+				List<Societe> allSocietes = new List<Societe>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						object tempContent = reader.GetValue(2);
+
+						allSocietes.Add(new Societe
+						{
+							IdSociete = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Commentaire = ConvertFromDBVal<string>(tempContent)
+						});
+					}
+				}
+
+				return allSocietes;
+			};
+
+			List<Societe> allSocietes = new List<Societe>();
+			try
+			{
+				allSocietes = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return allSocietes;
+		}
+
+		public async Task Add(Societe newSociete)
+		{
+			try
+			{
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					string command = "INSERT INTO societes (nom, commentaire) VALUES (@nom, @commentaire);";
+
+					using (var cmd = new MySqlCommand(command, conn))
+					{
+						cmd.Parameters.AddWithValue("@nom", newSociete.Nom);
+						cmd.Parameters.AddWithValue("@commentaire", newSociete.Commentaire);
+
+						conn.Open();
+						await cmd.ExecuteNonQueryAsync();
+						newSociete.IdSociete = await GetLastIdAsync(cmd);
+						conn.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public async Task Update(Societe newSociete)
+		{
+			using (var conn = new MySqlConnection(ConnectionString))
+			{
+				var commandUpdateCompetence = @$"UPDATE societes SET nom=@nom, commentaire=@commentaire"
+									  + $" WHERE id={newSociete.IdSociete};";
+
+				using (var cmd = new MySqlCommand(commandUpdateCompetence, conn))
+				{
+					cmd.Parameters.AddWithValue("@nom", newSociete.Nom);
+					cmd.Parameters.AddWithValue("@commentaire", newSociete.Commentaire);
+
+					conn.Open();
+					await cmd.ExecuteNonQueryAsync();
+					conn.Close();
+				}
+			}
+		}
+
 
 		#endregion
 
@@ -307,6 +393,28 @@ namespace Hermes.DataAccess
 			{
 				return (T)obj;
 			}
+		}
+
+		/// <summary>
+		/// Pour récupérer le dernier ID inséré.
+		/// </summary>
+		/// <param name="mySqlCommand"></param>
+		/// <returns></returns>
+		private async Task<uint> GetLastIdAsync(MySqlCommand mySqlCommand)
+		{
+			uint id = 0;
+			try
+			{
+				string commandId = "SELECT LAST_INSERT_ID();";
+				mySqlCommand.CommandText = commandId;
+				id = Convert.ToUInt32(await mySqlCommand.ExecuteScalarAsync());
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return id;
 		}
 
 		#endregion

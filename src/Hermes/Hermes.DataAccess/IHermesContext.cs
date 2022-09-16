@@ -15,6 +15,8 @@ namespace Hermes.DataAccess
 
 		Task Add(Competence competence);
 
+		Task Add(Societe societe);
+
 		#endregion
 
 		#region Toutes les méthodes Update des tables
@@ -22,6 +24,8 @@ namespace Hermes.DataAccess
 		Task Update(Techno techno);
 
 		Task Update(Competence competence);
+
+		Task Update(Societe societe);
 
 		#endregion
 
@@ -34,6 +38,11 @@ namespace Hermes.DataAccess
 
 		#region Competences Table
 		Task<List<Competence>> LoadCompetences();
+
+		#endregion
+
+		#region Societes Table
+		Task<List<Societe>> LoadSocietes();
 
 		#endregion
 	}

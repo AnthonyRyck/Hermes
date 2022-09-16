@@ -34,7 +34,7 @@ else
 			<Column T="Competence" Field="Nom" Title="Nom" Sortable="true" Filterable="false" />
 			<Column T="Competence" Field="Commentaire" Title="Commentaire" Sortable="false" Filterable="false" />
 
-			<Column T="Competence" Filterable="false" Sortable="false" Title="Edition" Resizable="true">
+			<Column T="Competence" Filterable="false" Sortable="false" Title="Edition">
 			<CellTemplate>
 				<MudIconButton Size="@Size.Small" Icon="@Icons.Outlined.Edit" OnClick="@(e => viewModel.Edit(context.Item.Id))" />
 			</CellTemplate>

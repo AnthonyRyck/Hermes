@@ -5,26 +5,26 @@ using Hermes.ValidationModels;
 using Microsoft.AspNetCore.Components.Forms;
 using MudBlazor;
 
-namespace Hermes.ViewModels
+namespace Hermes.ViewModels.Settings
 {
-	public class CompetenceViewModel : BaseViewModel, ICompetenceViewModel
+	public class SocieteViewModel : BaseViewModel, ISocieteViewModel
 	{
-		private ReferencielValidation CompetenceValidation;
+		private ReferencielValidation SocieteValidation;
 		private readonly IDialogService DialogService;
 		private EditContext EditContextValidation;
 
-		public CompetenceViewModel(IHermesContext contextHermes, ISnackbar snackbar, IDialogService dialogService) 
+		public SocieteViewModel(IHermesContext contextHermes, ISnackbar snackbar, IDialogService dialogService)
 			: base(contextHermes, snackbar)
 		{
 			DialogService = dialogService;
-			AllCompetence = new List<Competence>();
+			AllData = new List<Societe>();
 			IsLoading = true;
 			InitValidation();
 		}
 
 		#region ICompetenceViewModel
 
-		public List<Competence> AllCompetence { get; set; }
+		public List<Societe> AllData { get; set; }
 
 		public bool IsLoading { get; private set; }
 
@@ -45,17 +45,30 @@ namespace Hermes.ViewModels
 			return false;
 		};
 
+		Func<Societe, bool> ISocieteViewModel.QuickFilter => societe =>
+		{
+			if (string.IsNullOrWhiteSpace(RechercheItem))
+				return true;
+
+			if (societe.Nom.Contains(RechercheItem, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			if ((societe.Commentaire ?? string.Empty).Contains(RechercheItem, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			return false;
+		};
 
 		public async Task Load()
 		{
 			try
 			{
-				AllCompetence = await DbContext.LoadCompetences();
+				AllData = await DbContext.LoadSocietes();
 				IsLoading = false;
 			}
 			catch (Exception ex)
 			{
-				Error("Erreur sur le chargement des Competences", "Erreur de chargement", ex);
+				Error("Erreur sur le chargement des sociétés", "Erreur de chargement", ex);
 			}
 		}
 
@@ -63,21 +76,21 @@ namespace Hermes.ViewModels
 		{
 			try
 			{
-				var result = await OpenDialog("Ajout", CompetenceValidation);
+				var result = await OpenDialog("Ajout", SocieteValidation);
 
 				if (!result.Cancelled)
 				{
-					var newCompt = ((ReferencielValidation)result.Data).ToCompetence();
-					await DbContext.Add(newCompt);
+					var newSociete = ((ReferencielValidation)result.Data).ToSociete();
+					await DbContext.Add(newSociete);
 
-					AllCompetence.Add(newCompt);
-					string message = $"Compétence {newCompt.Nom} ajoutée";
+					AllData.Add(newSociete);
+					string message = $"Société {newSociete.Nom} ajoutée";
 					Success(message, message);
 				}
 			}
 			catch (Exception ex)
 			{
-				Error("Erreur sur l'ajout de la compétence", "Erreur d'ajout", ex);
+				Error("Erreur sur l'ajout de la société", "Erreur d'ajout", ex);
 			}
 
 			InitValidation();
@@ -85,11 +98,11 @@ namespace Hermes.ViewModels
 
 		public async Task Edit(uint id)
 		{
-			Competence competenceSelected = AllCompetence.Find(t => t.Id == id);
+			Societe societeSelected = AllData.Find(t => t.IdSociete == id);
 			ReferencielValidation cptToEdit = new ReferencielValidation()
 			{
-				Nom = competenceSelected.Nom,
-				Commentaire = competenceSelected.Commentaire
+				Nom = societeSelected.Nom,
+				Commentaire = societeSelected.Commentaire
 			};
 			EditContextValidation = new EditContext(cptToEdit);
 
@@ -99,11 +112,11 @@ namespace Hermes.ViewModels
 			{
 				var resultValidation = (ReferencielValidation)result.Data;
 
-				competenceSelected.Nom = resultValidation.Nom;
-				competenceSelected.Commentaire = resultValidation.Commentaire;
+				societeSelected.Nom = resultValidation.Nom;
+				societeSelected.Commentaire = resultValidation.Commentaire;
 
-				await DbContext.Update(competenceSelected);
-				string msg = $"Compétence {competenceSelected.Nom} modifiée";
+				await DbContext.Update(societeSelected);
+				string msg = $"Société {societeSelected.Nom} modifiée";
 				Success(msg, msg);
 			}
 		}
@@ -114,8 +127,8 @@ namespace Hermes.ViewModels
 
 		private void InitValidation()
 		{
-			CompetenceValidation = new ReferencielValidation();
-			EditContextValidation = new EditContext(CompetenceValidation);
+			SocieteValidation = new ReferencielValidation();
+			EditContextValidation = new EditContext(SocieteValidation);
 		}
 
 		private Task<DialogResult> OpenDialog(string titre, ReferencielValidation modelValidation)

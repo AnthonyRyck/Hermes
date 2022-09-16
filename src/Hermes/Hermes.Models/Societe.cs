@@ -9,7 +9,7 @@ namespace Hermes.Models
 	public class Societe
 	{
 		public uint IdSociete { get; set; }
-		public string NomSociete { get; set; }
+		public string Nom { get; set; }
 
 		public string Commentaire { get; set; }
 	}

@@ -2,6 +2,7 @@ using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.DataAccess;
 using Hermes.ViewModels;
+using Hermes.ViewModels.Settings;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -62,6 +63,7 @@ builder.Services.AddSingleton<IHermesContext>(new HermesContext(connectionDb));
 builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 builder.Services.AddScoped<ITechnosViewModel, TechnosViewModel>();
 builder.Services.AddScoped<ICompetenceViewModel, CompetenceViewModel>();
+builder.Services.AddScoped<ISocieteViewModel, SocieteViewModel>();
 
 var app = builder.Build();
 
