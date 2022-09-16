@@ -1,5 +1,4 @@
 ﻿using Hermes.Models;
-using Microsoft.AspNetCore.Components.Forms;
 
 namespace Hermes.ViewModels.Settings
 {
@@ -16,10 +15,17 @@ namespace Hermes.ViewModels.Settings
         bool IsLoading { get; }
 
         /// <summary>
-        /// Charge le tableau.
+        /// Pour faire une recherche
         /// </summary>
-        /// <returns></returns>
-        Task LoadTechnos();
+		string RechercheItem { get; set; }
+
+		Func<Techno, bool> QuickFilter { get; }
+
+		/// <summary>
+		/// Charge le tableau.
+		/// </summary>
+		/// <returns></returns>
+		Task LoadTechnos();
 
         /// <summary>
         /// Permet d'ouvrir un dialog pour ajouter une nouvelle techno.

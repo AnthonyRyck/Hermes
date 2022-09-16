@@ -31,9 +31,23 @@ namespace Hermes.ViewModels.Settings
 
         public bool IsLoading { get; private set; }
 
+		public string RechercheItem { get; set; }
 
+		public Func<Techno, bool> QuickFilter => tech =>
+		{
+			if (string.IsNullOrWhiteSpace(RechercheItem))
+				return true;
 
-        public async Task LoadTechnos()
+			if (tech.NomTech.Contains(RechercheItem, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			if ((tech.Commentaire ?? string.Empty).Contains(RechercheItem, StringComparison.OrdinalIgnoreCase))
+				return true;
+
+			return false;
+		};
+
+		public async Task LoadTechnos()
         {
             try
             {

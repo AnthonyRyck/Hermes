@@ -15,7 +15,8 @@ else
 	 Striped="true"
 	 Bordered="true"
 	 ReadOnly="true"
-	 EditMode=" DataGridEditMode.Form">
+	 EditMode=" DataGridEditMode.Form"
+	QuickFilter="@viewModel.QuickFilter">
 
 	<ToolBarContent>
 		<MudText Typo="Typo.h6">Liste des technos</MudText>
@@ -24,9 +25,9 @@ else
 			<MudIconButton Icon="@Icons.Material.Filled.AddCircle" Color="Color.Success" OnClick="@viewModel.AddNewTechno" />
 		</MudTooltip>
 				
-		@*<MudSpacer />
-		<MudTextField @bind-Value="_searchString" Placeholder="Search" Adornment="Adornment.Start" Immediate="true"
-					  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>*@
+		<MudSpacer />
+		<MudTextField @bind-Value="viewModel.RechercheItem" Placeholder="Recherche" Adornment="Adornment.Start" Immediate="true"
+					  AdornmentIcon="@Icons.Material.Filled.Search" IconSize="Size.Medium" Class="mt-0"></MudTextField>
 	</ToolBarContent>
 
 	<Columns>
