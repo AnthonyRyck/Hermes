@@ -12,6 +12,8 @@
         <MudNavLink Href="" Icon="@Icons.Filled.Home">Accueil</MudNavLink>
         
         <AuthorizeView Roles="Admin, Manager">
+			<MudNavLink Href="consultants" Icon="@Icons.Filled.Person">Consultants</MudNavLink>
+
             <MudNavGroup Title="Paramètres" Icon="@Icons.Filled.Settings">
                 <MudNavLink Href="users" Icon="@Icons.Filled.SupervisorAccount" IconColor="Color.Info">Utilisateurs</MudNavLink>
                 <MudNavLink Href="technos" Icon="@Icons.Filled.Language" IconColor="Color.Info">Technologies</MudNavLink>

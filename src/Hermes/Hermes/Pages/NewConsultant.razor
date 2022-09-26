@@ -1,0 +1,77 @@
+﻿@page "/addconsultant"
+@attribute [Authorize(Roles = "Admin, Manager")]
+@inject INouveauConsultantViewModel viewModel
+
+@using Hermes.ValidationModels
+
+<EditForm EditContext="@viewModel.EditContextValidation">
+    <DataAnnotationsValidator />
+        <MudGrid>
+            <MudItem xs="6">
+                <MudTextField @bind-Value="viewModel.ValidationForm.Nom"
+                              For="@(() => viewModel.ValidationForm.Nom)"
+                              Label="Nom"
+                              HelperText="Nom"
+                              Variant="Variant.Outlined"></MudTextField>
+    
+                <MudTextField @bind-Value="viewModel.ValidationForm.Prenom"
+                              For="@(() => viewModel.ValidationForm.Prenom)"
+                              Label="Prénom"
+                              HelperText="Prénom"
+                              Variant="Variant.Outlined"></MudTextField>
+            </MudItem>
+
+            <MudItem xs="1">
+                <InputFile id="photoInput"
+                           OnChange="viewModel.UploadPhoto"
+                           hidden
+                           accept=".jpg, .jpeg, .png" />
+
+                <MudTooltip Text="Ajouter une photo">
+                    <MudIconButton HtmlTag="label"
+                                   Color="Color.Primary"
+                                    Size="Size.Large"
+                                   Icon="@Icons.Filled.PhotoCamera"
+                                   for="photoInput" />
+                </MudTooltip>
+
+                
+            </MudItem>
+        
+            <MudItem xs="5">
+                @if (!string.IsNullOrEmpty(viewModel.UrlPhoto))
+                {
+                    <div>
+                        <MudImage Src="@viewModel.UrlPhoto" Class="rounded-lg" ObjectFit="ObjectFit.Contain" Height="250"></MudImage>
+                    </div>
+                }
+            </MudItem>
+
+
+
+            <MudItem xs="12">
+                <MudButton Variant="Variant.Filled" 
+                            Color="Color.Primary" 
+                            ButtonType="ButtonType.Submit" 
+                            OnClick="@viewModel.Add">Ajouter</MudButton>
+                <MudButton Variant="Variant.Filled" 
+                            Color="Color.Secondary" 
+                            OnClick="@viewModel.Cancel">Annuler</MudButton>
+            </MudItem>
+
+
+
+
+
+
+
+        </MudGrid>
+</EditForm>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        viewModel.SetStateHasChanged(StateHasChanged);
+    }
+}

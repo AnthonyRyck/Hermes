@@ -327,6 +327,96 @@ namespace Hermes.DataAccess
 			}
 		}
 
+		#endregion
+
+		#region Consultants Table
+
+		public async Task<List<Consultant>> LoadConsultants()
+		{
+			var commandText = @"SELECT id, nom, prenom, urlphoto, minicv "
+			 + "FROM consultants;";
+
+			Func<MySqlCommand, Task<List<Consultant>>> funcCmd = async (cmd) =>
+			{
+				List<Consultant> allConsultants = new List<Consultant>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						allConsultants.Add(new Consultant
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Prenom = reader.GetString(2),
+							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3)),
+							MiniCv = ConvertFromDBVal<byte[]>(reader.GetValue(4))
+						});
+					}
+				}
+
+				return allConsultants;
+			};
+
+			List<Consultant> allConsultants = new List<Consultant>();
+			try
+			{
+				allConsultants = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return allConsultants;
+		}
+
+		public async Task Add(Consultant consultant)
+		{
+			try
+			{
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					string command = "INSERT INTO consultants (nom, prenom, urlphoto, minicv) "
+					+ "VALUES (@nom, @prenom, @urlphoto, @minicv);";
+
+					using (var cmd = new MySqlCommand(command, conn))
+					{
+						cmd.Parameters.AddWithValue("@nom", consultant.Nom);
+						cmd.Parameters.AddWithValue("@prenom", consultant.Prenom);
+						cmd.Parameters.AddWithValue("@urlphoto", consultant.UrlPhoto);
+						cmd.Parameters.AddWithValue("@minicv", consultant.MiniCv);
+
+						conn.Open();
+						await cmd.ExecuteNonQueryAsync();
+						consultant.Id = await GetLastIdAsync(cmd);
+						conn.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}		
+
+		public async Task UpdatePhotoConsultant(uint id, string urlPhoto)
+		{
+			using (var conn = new MySqlConnection(ConnectionString))
+			{
+				var commandUpdateCompetence = @$"UPDATE consultants SET urlphoto=@urlphoto"
+									  + $" WHERE id={id};";
+
+				using (var cmd = new MySqlCommand(commandUpdateCompetence, conn))
+				{
+					cmd.Parameters.AddWithValue("@urlphoto", urlPhoto);
+
+					conn.Open();
+					await cmd.ExecuteNonQueryAsync();
+					conn.Close();
+				}
+			}
+		}
+
 
 		#endregion
 

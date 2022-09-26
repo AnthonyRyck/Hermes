@@ -20,7 +20,7 @@ create table if not exists consultants
 (id int unsigned not null auto_increment,
 nom varchar(100) not null,
 prenom varchar(100) not null,
-photo mediumblob,
+urlphoto varchar(100),
 minicv mediumblob,
 primary key(id));
 

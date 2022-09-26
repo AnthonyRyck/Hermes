@@ -62,3 +62,37 @@ a, .btn-link {
     .blazor-error-boundary::after {
         content: "An error has occurred."
     }
+
+
+.padding-25px {
+    padding: 25px;
+}
+
+.padding-15px {
+    padding-15px;
+}
+
+/**************************/
+/*CSS pour CardConsultant */
+/**************************/
+
+.grow {
+    transition: all .2s ease-in-out;
+}
+
+.grow:hover {
+    transform: scale(1.1);
+}
+
+.card-consultant {
+    height: 250px;
+    width: 350px;
+    background-size: cover;
+}
+
+.imgfade {
+    height: 250px;
+    width: 350px;
+    color: white;
+    background: linear-gradient(180deg, rgba(20,20,20, 1) 0%, rgba(20,20,20, 0.8) 30%, rgba(20,20,20, 0.8) 50%, rgba(20,20,20, 0) 100%);
+}

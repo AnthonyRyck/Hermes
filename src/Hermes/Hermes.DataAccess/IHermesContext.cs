@@ -17,6 +17,8 @@ namespace Hermes.DataAccess
 
 		Task Add(Societe societe);
 
+		Task Add(Consultant consultant);
+
 		#endregion
 
 		#region Toutes les méthodes Update des tables
@@ -42,7 +44,16 @@ namespace Hermes.DataAccess
 		#endregion
 
 		#region Societes Table
+
 		Task<List<Societe>> LoadSocietes();
+
+		#endregion
+
+		#region Consultants Table
+
+		Task<List<Consultant>> LoadConsultants();
+		
+		Task UpdatePhotoConsultant(uint id, string urlPhoto);
 
 		#endregion
 	}

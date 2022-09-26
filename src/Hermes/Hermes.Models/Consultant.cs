@@ -11,7 +11,8 @@ namespace Hermes.Models
 		public uint Id { get; set; }
 		public string Nom { get; set; }
 		public string Prenom { get; set; }
-		public byte[] Photo { get; set; }
+
+		public string UrlPhoto { get; set; }
 
 		public byte[] MiniCv { get; set; }
 	}

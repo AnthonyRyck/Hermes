@@ -1,0 +1,51 @@
+﻿@page "/consultants"
+@attribute [Authorize(Roles = "Admin, Manager")]
+@inject IConsultantViewModel viewModel
+
+<h3>Consultants</h3>
+
+@if(viewModel.IsLoading)
+{
+	<div>Chargement des consultants ...</div>
+	<MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+}
+else
+{
+	<MudFab StartIcon="@Icons.Filled.PersonAdd"
+		Color="Color.Primary"
+		OnClick="viewModel.AddConsultant"
+		Label="Ajouter un consultant"
+		Size="Size.Medium" />
+
+	<div class="padding-25px">
+
+	
+	@if(viewModel.Consultants.Count == 0)
+	{
+		<div>Il n'y a aucun consultant</div>
+	}
+	else
+	{
+		<MudStack Row="true" Justify="Justify.FlexStart" Class="flex-wrap">
+
+		    @foreach (Consultant consultant in viewModel.Consultants)
+		    {
+				<ConsultantCard Nom="@consultant.Nom"
+								Prenom="@consultant.Prenom"
+								Image="@consultant.UrlPhoto" />
+
+		                @*OnClickPost="@(() => ViewModel.OpenPost(post.Id, post.UrlTitle))" />*@
+		    }
+		
+		</MudStack>
+	}
+	</div>
+}
+
+@code {
+
+	protected override async Task OnInitializedAsync()
+	{
+		await viewModel.LoadConsultants();
+	}
+}

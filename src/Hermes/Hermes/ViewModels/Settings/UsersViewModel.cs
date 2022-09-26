@@ -1,8 +1,6 @@
-﻿using Hermes.Components.Dialogs;
-using Hermes.Data;
+﻿using Hermes.Data;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
-using MudBlazor;
 
 namespace Hermes.ViewModels.Settings
 {

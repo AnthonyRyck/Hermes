@@ -1,7 +1,4 @@
-﻿using Hermes.DataAccess;
-using MudBlazor;
-
-namespace Hermes.ViewModels
+﻿namespace Hermes.ViewModels
 {
 	public abstract class BaseViewModel
 	{
@@ -19,19 +16,39 @@ namespace Hermes.ViewModels
 		protected void Error(string msgLog, string msgNotif, Exception ex)
 		{
 			Log.Error(ex, msgLog);
+			
 			Notification.Clear();
 			Notification.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
 			Notification.Add(msgNotif, Severity.Error);
 		}
 
+		protected void Error(string msgError, Exception ex)
+		{
+			Log.Error(ex, msgError);
+			
+			Notification.Clear();
+			Notification.Configuration.PositionClass = Defaults.Classes.Position.TopCenter;
+			Notification.Add(msgError, Severity.Error);
+		}
+
 		protected void Success(string msgLog, string msgNotif)
 		{
 			Log.Information(msgLog);
+			
 			Notification.Clear();
 			Notification.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
 			Notification.Add(msgNotif, Severity.Success);
 		}
 
-		
+		protected void Success(string msg)
+		{
+			Log.Information(msg);
+
+			Notification.Clear();
+			Notification.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+			Notification.Add(msg, Severity.Success);
+		}
+
+
 	}
 }

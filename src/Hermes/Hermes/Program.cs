@@ -1,10 +1,12 @@
 using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.DataAccess;
+using Hermes.ViewModels;
 using Hermes.ViewModels.Settings;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.FileProviders;
 using MudBlazor;
 using MudBlazor.Services;
 using System.Globalization;
@@ -63,6 +65,13 @@ builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 builder.Services.AddScoped<ITechnosViewModel, TechnosViewModel>();
 builder.Services.AddScoped<ICompetenceViewModel, CompetenceViewModel>();
 builder.Services.AddScoped<ISocieteViewModel, SocieteViewModel>();
+builder.Services.AddScoped<IConsultantViewModel, ConsultantViewModel>();
+builder.Services.AddScoped<INouveauConsultantViewModel, NouveauConsultantViewModel>();
+
+// Augmentation de la taille des messages pour les images.
+builder.Services.AddSignalR(e => {
+	e.MaximumReceiveMessageSize = 102400000;
+});
 
 var app = builder.Build();
 
@@ -133,5 +142,21 @@ Log.Logger = new LoggerConfiguration()
 	.MinimumLevel.Override("System", LogEventLevel.Warning)
 	.WriteTo.MySQL(connectionDb, "Logs")
 	.CreateLogger();
+
+// Chemin pour stocker les images des consultants
+string pathImages = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, ConstantesHermes.IMAGES);
+if (!Directory.Exists(pathImages))
+	Directory.CreateDirectory(pathImages);
+
+string pathConsultantsImg = Path.Combine(pathImages, ConstantesHermes.IMG_CONSULTANTS);
+if (!Directory.Exists(pathConsultantsImg))
+	Directory.CreateDirectory(pathConsultantsImg);
+
+
+app.UseStaticFiles(new StaticFileOptions
+{
+	FileProvider = new PhysicalFileProvider(pathConsultantsImg),
+	RequestPath = ConstantesHermes.REQUEST_PATH_IMG
+});
 
 app.Run();

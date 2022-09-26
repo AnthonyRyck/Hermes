@@ -1,6 +1,4 @@
-﻿using Hermes.Models;
-
-namespace Hermes.ViewModels.Settings
+﻿namespace Hermes.ViewModels.Settings
 {
 	public interface ISocieteViewModel
 	{

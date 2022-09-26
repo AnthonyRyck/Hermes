@@ -1,0 +1,24 @@
+﻿<div class="card-consultant grow" @onclick="OnClickConsultant" style="background-image: url(@Image);">
+    <div class="imgfade">
+        <div class="padding-25px">
+            <h2>@Nom</h2>
+            <h3>@Prenom</h3>
+        </div>
+    </div>
+</div>
+
+@code {
+
+    [Parameter]
+    public string Nom { get; set; }
+
+    [Parameter]
+    public string Prenom { get; set; }
+
+    [Parameter]
+    public string Image { get; set; }
+
+    [Parameter]
+    public EventCallback OnClickConsultant { get; set; }
+}
+
