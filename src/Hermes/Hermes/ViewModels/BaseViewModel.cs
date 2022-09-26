@@ -50,5 +50,12 @@
 		}
 
 
+		protected void DisplayWarning(string msg)
+		{
+			Notification.Clear();
+			Notification.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+			Notification.Add(msg, Severity.Warning);
+		}
+
 	}
 }

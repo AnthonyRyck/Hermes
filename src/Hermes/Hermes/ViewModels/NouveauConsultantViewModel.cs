@@ -12,22 +12,89 @@ namespace Hermes.ViewModels
 		private readonly NavigationManager Nav;
 		private Action StateHasChanged;
 
-		public NouveauConsultantViewModel(IHermesContext contextHermes, ISnackbar snackbar, NavigationManager navigation) 
+		private List<Techno> AllTechnos;
+
+		public NouveauConsultantViewModel(IHermesContext contextHermes, ISnackbar snackbar, NavigationManager navigation)
 			: base(contextHermes, snackbar)
 		{
 			ValidationForm = new ConsultantValidation();
 			EditContextValidation = new EditContext(ValidationForm);
 			Nav = navigation;
+			IsLoading = true;
+
+			TechnoSelected = new List<Techno>();
 		}
 
 
 		#region Implement INouveauConsultantViewModel
+
+		public bool IsLoading { get; private set; }
 
 		public ConsultantValidation ValidationForm { get; set; }
 
 		public EditContext EditContextValidation { get; set; }
 
 		public string UrlPhoto { get; private set; }
+
+		public IEnumerable<string> Technos { get; private set; }
+
+		public List<Techno> TechnoSelected { get; private set; }
+
+		public IEnumerable<Competence> Competences { get; private set; }
+
+
+		public async Task LoadDatas()
+		{
+			IsLoading = true;
+			AllTechnos = await DbContext.LoadTechnos();
+			Technos = new List<string>(AllTechnos.Select(x => x.NomTech).ToList());
+
+			Competences = await DbContext.LoadCompetences();
+			IsLoading = false;
+			StateHasChanged.Invoke();
+		}
+
+		public async Task<IEnumerable<string>> SearchTechno(string value)
+		{
+			await Task.Delay(5);
+			List<string> result = new List<string>();
+
+			try
+			{
+				if (!string.IsNullOrEmpty(value))
+					result = AllTechnos.Where(x => x.NomTech.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+										.Select(x => x.NomTech)
+										.ToList();
+			}
+			catch (Exception ex)
+			{
+				Error($"Erreur sur la recherche de la techno {value}", ex);
+			}
+			
+			return result;
+		}
+
+		public void OnSelectTechno(string value)
+		{
+			Techno technoSelected = AllTechnos.FirstOrDefault(x => x.NomTech == value);
+
+			if (TechnoSelected.Contains(technoSelected))
+			{
+				DisplayWarning($"{value} est déjà sélectionné");
+				return;
+			}
+
+			TechnoSelected.Add(technoSelected);
+			StateHasChanged.Invoke();
+		}
+
+		public void DeleteTech(uint id)
+		{
+			TechnoSelected.RemoveAll(x => x.Id == id);
+			StateHasChanged.Invoke();
+		}
+
+
 
 		public async Task UploadPhoto(InputFileChangeEventArgs e)
 		{
@@ -160,6 +227,10 @@ namespace Hermes.ViewModels
 				fileToDelete?.Delete();
 			}
 		}
+
+
+
+
 
 		#endregion
 

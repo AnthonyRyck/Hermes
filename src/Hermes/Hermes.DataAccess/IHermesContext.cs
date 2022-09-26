@@ -54,7 +54,7 @@ namespace Hermes.DataAccess
 		Task<List<Consultant>> LoadConsultants();
 		
 		Task UpdatePhotoConsultant(uint id, string urlPhoto);
-
-		#endregion
-	}
+                
+        #endregion
+    }
 }

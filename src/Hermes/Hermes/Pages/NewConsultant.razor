@@ -7,16 +7,19 @@
 <EditForm EditContext="@viewModel.EditContextValidation">
     <DataAnnotationsValidator />
         <MudGrid>
+		    <!-- Première ligne -->
             <MudItem xs="6">
                 <MudTextField @bind-Value="viewModel.ValidationForm.Nom"
                               For="@(() => viewModel.ValidationForm.Nom)"
                               Label="Nom"
+    							Disabled="@viewModel.IsLoading"
                               HelperText="Nom"
                               Variant="Variant.Outlined"></MudTextField>
     
                 <MudTextField @bind-Value="viewModel.ValidationForm.Prenom"
                               For="@(() => viewModel.ValidationForm.Prenom)"
                               Label="Prénom"
+                          Disabled="@viewModel.IsLoading"
                               HelperText="Prénom"
                               Variant="Variant.Outlined"></MudTextField>
             </MudItem>
@@ -48,30 +51,45 @@
             </MudItem>
 
 
+		<!-- Deuxième ligne -->
+		<MudItem xs="5">
+			 <MudAutocomplete T="string"
+                            Label="Technologies"
+                             Disabled="@viewModel.IsLoading"
+                             AdornmentIcon="@Icons.Material.Filled.Search"
+                             SearchFunc="@viewModel.SearchTechno"
+                             ValueChanged="@viewModel.OnSelectTechno" />
+        </MudItem>
+
+        <MudItem xs="5">
+            @foreach (var tech in viewModel.TechnoSelected)
+            {
+                <MudChip Color="Color.Success" 
+                        OnClose="@(() => viewModel.DeleteTech(tech.Id))"
+                        CloseIcon="@Icons.Material.Filled.Close">@tech.NomTech</MudChip>
+            }
+        </MudItem>
+
+
 
             <MudItem xs="12">
                 <MudButton Variant="Variant.Filled" 
-                            Color="Color.Primary" 
+                            Color="Color.Primary"
+                            Disabled="@viewModel.IsLoading"
                             ButtonType="ButtonType.Submit" 
                             OnClick="@viewModel.Add">Ajouter</MudButton>
                 <MudButton Variant="Variant.Filled" 
                             Color="Color.Secondary" 
                             OnClick="@viewModel.Cancel">Annuler</MudButton>
             </MudItem>
-
-
-
-
-
-
-
         </MudGrid>
 </EditForm>
 
 @code {
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
         viewModel.SetStateHasChanged(StateHasChanged);
+        await viewModel.LoadDatas();
     }
 }
