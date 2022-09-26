@@ -52,7 +52,7 @@
 
 
 		<!-- Deuxième ligne -->
-		<MudItem xs="5">
+		<MudItem xs="6">
 			 <MudAutocomplete T="string"
                             Label="Technologies"
                              Disabled="@viewModel.IsLoading"
@@ -61,12 +61,33 @@
                              ValueChanged="@viewModel.OnSelectTechno" />
         </MudItem>
 
-        <MudItem xs="5">
+	    <MudItem xs="6">
+			 <MudAutocomplete T="string"
+                            Label="Compétences"
+                             Disabled="@viewModel.IsLoading"
+                             AdornmentIcon="@Icons.Material.Filled.Search"
+                             SearchFunc="@viewModel.SearchCompetence"
+                             ValueChanged="@viewModel.OnSelectCompetence" />
+        </MudItem>
+
+		
+        <MudItem xs="6">
+            <div><u>Liste des technos maîtrisées</u> :</div>
             @foreach (var tech in viewModel.TechnoSelected)
             {
                 <MudChip Color="Color.Success" 
                         OnClose="@(() => viewModel.DeleteTech(tech.Id))"
                         CloseIcon="@Icons.Material.Filled.Close">@tech.NomTech</MudChip>
+            }
+        </MudItem>
+
+        <MudItem xs="6">
+            <div><u>Liste des compétences</u> :</div>
+            @foreach (var comp in viewModel.CompetencesSelected)
+            {
+                <MudChip Color="Color.Secondary"
+                     OnClose="@(() => viewModel.DeleteCompetence(comp.Id))"
+                     CloseIcon="@Icons.Material.Filled.Close">@comp.Nom</MudChip>
             }
         </MudItem>
 

@@ -13,6 +13,7 @@ namespace Hermes.ViewModels
 		private Action StateHasChanged;
 
 		private List<Techno> AllTechnos;
+		private List<Competence> AllCompetences;
 
 		public NouveauConsultantViewModel(IHermesContext contextHermes, ISnackbar snackbar, NavigationManager navigation)
 			: base(contextHermes, snackbar)
@@ -23,6 +24,7 @@ namespace Hermes.ViewModels
 			IsLoading = true;
 
 			TechnoSelected = new List<Techno>();
+			CompetencesSelected = new List<Competence>();
 		}
 
 
@@ -36,11 +38,14 @@ namespace Hermes.ViewModels
 
 		public string UrlPhoto { get; private set; }
 
+		
 		public IEnumerable<string> Technos { get; private set; }
 
 		public List<Techno> TechnoSelected { get; private set; }
 
-		public IEnumerable<Competence> Competences { get; private set; }
+
+		public IEnumerable<string> Competences { get; private set; }
+		public List<Competence> CompetencesSelected { get; private set; }
 
 
 		public async Task LoadDatas()
@@ -49,11 +54,14 @@ namespace Hermes.ViewModels
 			AllTechnos = await DbContext.LoadTechnos();
 			Technos = new List<string>(AllTechnos.Select(x => x.NomTech).ToList());
 
-			Competences = await DbContext.LoadCompetences();
+			AllCompetences = await DbContext.LoadCompetences();
+			Competences = new List<string>(AllCompetences.Select(x => x.Nom)).ToList();
+			
 			IsLoading = false;
 			StateHasChanged.Invoke();
 		}
 
+		
 		public async Task<IEnumerable<string>> SearchTechno(string value)
 		{
 			await Task.Delay(5);
@@ -91,6 +99,49 @@ namespace Hermes.ViewModels
 		public void DeleteTech(uint id)
 		{
 			TechnoSelected.RemoveAll(x => x.Id == id);
+			StateHasChanged.Invoke();
+		}
+
+
+
+
+		public async Task<IEnumerable<string>> SearchCompetence(string value)
+		{
+			await Task.Delay(5);
+			List<string> result = new List<string>();
+
+			try
+			{
+				if (!string.IsNullOrEmpty(value))
+					result = AllCompetences.Where(x => x.Nom.Contains(value, StringComparison.InvariantCultureIgnoreCase))
+										.Select(x => x.Nom)
+										.ToList();
+			}
+			catch (Exception ex)
+			{
+				Error($"Erreur sur la recherche de la compétence {value}", ex);
+			}
+
+			return result;
+		}
+
+		public void OnSelectCompetence(string value)
+		{
+			Competence competenceSelected = AllCompetences.FirstOrDefault(x => x.Nom == value);
+
+			if (CompetencesSelected.Contains(competenceSelected))
+			{
+				DisplayWarning($"{value} est déjà sélectionné");
+				return;
+			}
+
+			CompetencesSelected.Add(competenceSelected);
+			StateHasChanged.Invoke();
+		}
+
+		public void DeleteCompetence(uint id)
+		{
+			CompetencesSelected.RemoveAll(x => x.Id == id);
 			StateHasChanged.Invoke();
 		}
 
@@ -227,6 +278,8 @@ namespace Hermes.ViewModels
 				fileToDelete?.Delete();
 			}
 		}
+
+
 
 
 

@@ -11,13 +11,25 @@ namespace Hermes.ViewModels
 
 		EditContext EditContextValidation { get; set; }
 
+		
 		IEnumerable<string> Technos { get; }
 
 		List<Techno> TechnoSelected { get; }
-
-		IEnumerable<Competence> Competences { get; }
+		Task<IEnumerable<string>> SearchTechno(string value);
 
 		void OnSelectTechno(string value);
+		void DeleteTech(uint id);
+		
+
+
+		IEnumerable<string> Competences { get; }
+
+		List<Competence> CompetencesSelected { get; }
+
+		Task<IEnumerable<string>> SearchCompetence(string value);
+		void OnSelectCompetence(string value);
+
+		void DeleteCompetence(uint id);
 
 		string UrlPhoto { get; }
 
@@ -32,8 +44,6 @@ namespace Hermes.ViewModels
 		void SetStateHasChanged(Action changed);
 
 
-		Task<IEnumerable<string>> SearchTechno(string value);
 
-		void DeleteTech(uint id);
 	}
 }
