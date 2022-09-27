@@ -1,5 +1,6 @@
 ﻿using Hermes.Models;
 using MySqlConnector;
+using System.Reflection.Metadata;
 
 namespace Hermes.DataAccess
 {
@@ -417,6 +418,80 @@ namespace Hermes.DataAccess
 			}
 		}
 
+
+		public async Task AddTechnoToConsultant(uint idConsultant, IEnumerable<uint> listTechnos)
+		{
+			try
+			{
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					string command = "INSERT INTO consultanttechnos (idconsultant, idtechno) "
+					+ "VALUES (@consultant, @tech);";
+
+					using (var cmd = new MySqlCommand(command, conn))
+					{
+						conn.Open();
+						
+						foreach (var tech in listTechnos)
+						{
+							if (cmd.Parameters.Count > 0)
+							{
+								cmd.Parameters.Clear();
+							}
+
+							cmd.Parameters.AddWithValue("@consultant", idConsultant);
+							cmd.Parameters.AddWithValue("@tech", tech);
+
+							await cmd.ExecuteNonQueryAsync();
+						}
+						
+						conn.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
+
+		public async Task AddCompetenceToConsultant(uint idConsultant, IEnumerable<uint> listCompetences)
+		{
+			try
+			{
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					string command = "INSERT INTO consultantcompetences (idconsultant, idcompetence) "
+					+ "VALUES (@consultant, @comp);";
+
+					using (var cmd = new MySqlCommand(command, conn))
+					{
+						cmd.Parameters.AddWithValue("@consultant", idConsultant);
+
+						conn.Open();
+						
+						foreach (var comp in listCompetences)
+						{
+							if (cmd.Parameters.Count > 0)
+							{
+								cmd.Parameters.Clear();
+							}
+
+							cmd.Parameters.AddWithValue("@consultant", idConsultant);
+							cmd.Parameters.AddWithValue("@comp", comp);
+
+							await cmd.ExecuteNonQueryAsync();
+						}
+						
+						conn.Close();
+					}
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+		}
 
 		#endregion
 

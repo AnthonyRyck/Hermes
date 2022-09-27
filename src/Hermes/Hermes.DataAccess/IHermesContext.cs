@@ -54,7 +54,10 @@ namespace Hermes.DataAccess
 		Task<List<Consultant>> LoadConsultants();
 		
 		Task UpdatePhotoConsultant(uint id, string urlPhoto);
-                
-        #endregion
-    }
+		
+		Task AddTechnoToConsultant(uint id, IEnumerable<uint> list);
+		Task AddCompetenceToConsultant(uint id, IEnumerable<uint> list);
+
+		#endregion
+	}
 }

@@ -51,6 +51,7 @@ namespace Hermes.ViewModels
 		public async Task LoadDatas()
 		{
 			IsLoading = true;
+			
 			AllTechnos = await DbContext.LoadTechnos();
 			Technos = new List<string>(AllTechnos.Select(x => x.NomTech).ToList());
 
@@ -61,7 +62,8 @@ namespace Hermes.ViewModels
 			StateHasChanged.Invoke();
 		}
 
-		
+		#region Ajout/Suppr Technos
+
 		public async Task<IEnumerable<string>> SearchTechno(string value)
 		{
 			await Task.Delay(5);
@@ -102,8 +104,9 @@ namespace Hermes.ViewModels
 			StateHasChanged.Invoke();
 		}
 
+		#endregion
 
-
+		#region Ajout/Suppr Compétences
 
 		public async Task<IEnumerable<string>> SearchCompetence(string value)
 		{
@@ -145,7 +148,7 @@ namespace Hermes.ViewModels
 			StateHasChanged.Invoke();
 		}
 
-
+		#endregion
 
 		public async Task UploadPhoto(InputFileChangeEventArgs e)
 		{
@@ -187,6 +190,13 @@ namespace Hermes.ViewModels
 				// Renommer la photo.
 				newConsultant.UrlPhoto = RenameTempPhoto(newConsultant.Id);
 				await DbContext.UpdatePhotoConsultant(newConsultant.Id, newConsultant.UrlPhoto);
+
+				// Sauvegarde des compétences et technos connues
+				if (TechnoSelected.Any())
+					await DbContext.AddTechnoToConsultant(newConsultant.Id, TechnoSelected.Select(x => x.Id).ToList());
+
+				if (CompetencesSelected.Any())
+					await DbContext.AddCompetenceToConsultant(newConsultant.Id, CompetencesSelected.Select(x => x.Id).ToList());
 
 				Success($"Consultant {newConsultant.Nom} {newConsultant.Prenom} ajouté");
 				InitData();
