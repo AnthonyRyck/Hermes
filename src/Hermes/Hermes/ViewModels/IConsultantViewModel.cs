@@ -1,4 +1,4 @@
-﻿using Microsoft.JSInterop;
+﻿using Hermes.Codes.ViewObjects;
 
 namespace Hermes.ViewModels
 {
@@ -10,6 +10,8 @@ namespace Hermes.ViewModels
 		bool IsLoading { get; }
 
 		List<Consultant> Consultants { get; }
+
+		List<CompetenceTechnoViewObject> Filtres { get; }
 
 		/// <summary>
 		/// Charge les consultants.
@@ -24,5 +26,11 @@ namespace Hermes.ViewModels
 		Task AddConsultant();
 
 		void OpenPageConsultant(int idConsultant);
+
+		Task<IEnumerable<string>> SearchByKeyword(string motCle);
+
+		Task OnSelectKeyword(string value);
+
+		Task DeleteFiltre(uint id);
 	}
 }

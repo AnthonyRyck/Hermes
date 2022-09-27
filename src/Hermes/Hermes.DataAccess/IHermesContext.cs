@@ -52,11 +52,18 @@ namespace Hermes.DataAccess
 		#region Consultants Table
 
 		Task<List<Consultant>> LoadConsultants();
-		
+
+		Task<List<Consultant>> LoadConsultants(List<uint> idConsultants);
+
+
 		Task UpdatePhotoConsultant(uint id, string urlPhoto);
 		
 		Task AddTechnoToConsultant(uint id, IEnumerable<uint> list);
 		Task AddCompetenceToConsultant(uint id, IEnumerable<uint> list);
+
+		Task<List<uint>> GetConsultantByCompetence(IEnumerable<uint> idsComp);
+
+		Task<List<uint>> GetConsultantByTechno(IEnumerable<uint> idsTechno);
 
 		#endregion
 	}

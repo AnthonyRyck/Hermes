@@ -11,10 +11,39 @@
 }
 else
 {
+	<div class="d-flex">
+		<MudAutocomplete T="string"
+					 Label="Mot clé"
+					 Disabled="@viewModel.IsLoading"
+					 AdornmentIcon="@Icons.Material.Filled.Search"
+					 SearchFunc="@viewModel.SearchByKeyword"
+					 ValueChanged="@viewModel.OnSelectKeyword" />
+	</div>
+
+	<div>
+		<div><u>Filtres</u> :</div>
+		@foreach (var filtre in viewModel.Filtres)
+		{
+			@if (filtre.Type == TypeCompetenceTechno.Techno)
+			{
+				<MudChip Color="Color.Success"
+						OnClose="@(() => viewModel.DeleteFiltre(filtre.Id))"
+						CloseIcon="@Icons.Material.Filled.Close">@filtre.Nom</MudChip>
+			}
+			else
+			{
+				<MudChip Color="Color.Secondary"
+						OnClose="@(() => viewModel.DeleteFiltre(filtre.Id))"
+						CloseIcon="@Icons.Material.Filled.Close">@filtre.Nom</MudChip>
+			}
+		}
+	</div>
+
 	<MudFab StartIcon="@Icons.Filled.PersonAdd"
 		Color="Color.Primary"
 		OnClick="viewModel.AddConsultant"
 		Label="Ajouter un consultant"
+		Disabled="@viewModel.IsLoading"
 		Size="Size.Medium" />
 
 	<div class="padding-25px">

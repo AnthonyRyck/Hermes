@@ -334,7 +334,7 @@ namespace Hermes.DataAccess
 
 		public async Task<List<Consultant>> LoadConsultants()
 		{
-			var commandText = @"SELECT id, nom, prenom, urlphoto, minicv "
+			var commandText = @"SELECT id, nom, prenom, urlphoto "
 			 + "FROM consultants;";
 
 			Func<MySqlCommand, Task<List<Consultant>>> funcCmd = async (cmd) =>
@@ -349,8 +349,65 @@ namespace Hermes.DataAccess
 							Id = reader.GetUInt32(0),
 							Nom = reader.GetString(1),
 							Prenom = reader.GetString(2),
-							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3)),
-							MiniCv = ConvertFromDBVal<byte[]>(reader.GetValue(4))
+							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3))
+						});
+					}
+				}
+
+				return allConsultants;
+			};
+
+			List<Consultant> allConsultants = new List<Consultant>();
+			try
+			{
+				allConsultants = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return allConsultants;
+		}
+
+		public async Task<List<Consultant>> LoadConsultants(List<uint> idConsultants)
+		{
+			string commandText = string.Empty;
+
+			// Aucun consultant ne répond aux critères, on retourne une liste vide
+			if (idConsultants.Count == 0)
+			{
+				return new List<Consultant>();
+			}
+			
+			if(idConsultants.Count > 1)
+			{
+				string ids = string.Join(",", idConsultants);
+
+				commandText = @"SELECT id, nom, prenom, urlphoto "
+				 + "FROM consultants "
+				 + $"WHERE id IN ({ids});";
+			}
+			else
+			{
+				commandText = @"SELECT id, nom, prenom, urlphoto "
+				 + "FROM consultants "
+				 + $"WHERE id = {idConsultants[0]};";
+			}
+
+			Func<MySqlCommand, Task<List<Consultant>>> funcCmd = async (cmd) =>
+			{
+				List<Consultant> allConsultants = new List<Consultant>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						allConsultants.Add(new Consultant
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Prenom = reader.GetString(2),
+							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3))
 						});
 					}
 				}
@@ -493,6 +550,77 @@ namespace Hermes.DataAccess
 			}
 		}
 
+
+		public async Task<List<uint>> GetConsultantByCompetence(IEnumerable<uint> idsComp)
+		{
+			string ids = string.Join(",", idsComp);
+
+			string command = "SELECT idconsultant "
+			+ "FROM consultantcompetences "
+			+ $"WHERE idcompetence IN ({ids});";
+
+			Func<MySqlCommand, Task<List<uint>>> funcCmd = async (cmd) =>
+			{
+				List<uint> consultantsWithCompetence = new List<uint>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						consultantsWithCompetence.Add(reader.GetUInt32(0));
+					}
+				}
+
+				return consultantsWithCompetence;
+			};
+
+			List<uint> consultantsWithCompetence = new List<uint>();
+			try
+			{
+				consultantsWithCompetence = await GetCoreAsync(command, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return consultantsWithCompetence;
+		}
+
+		public async Task<List<uint>> GetConsultantByTechno(IEnumerable<uint> idsTechno)
+		{
+			string ids = string.Join(",", idsTechno);
+
+			string command = "SELECT idconsultant "
+			+ "FROM consultanttechnos "
+			+ $"WHERE idtechno IN ({ids});";
+
+			Func<MySqlCommand, Task<List<uint>>> funcCmd = async (cmd) =>
+			{
+				List<uint> consultantsWithTechno = new List<uint>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						consultantsWithTechno.Add(reader.GetUInt32(0));
+					}
+				}
+
+				return consultantsWithTechno;
+			};
+
+			List<uint> consultantsWithTechno = new List<uint>();
+			try
+			{
+				consultantsWithTechno = await GetCoreAsync(command, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return consultantsWithTechno;
+		}
+
 		#endregion
 
 		#region Private methods
@@ -580,6 +708,12 @@ namespace Hermes.DataAccess
 			}
 
 			return id;
+		}
+
+
+		private string ToStringList(IEnumerable<uint> ids)
+		{
+			return string.Join(",", ids);
 		}
 
 		#endregion
