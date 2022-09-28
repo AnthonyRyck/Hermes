@@ -1,0 +1,30 @@
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-bullseye-slim AS base
+WORKDIR /app
+EXPOSE 80
+
+ENV DB_HOST="YourAddressdatabase"
+ENV LOGIN_DB="YourLogin"
+ENV PASSWORD_DB="YourPassword"
+ENV DB_NAME="YourDbName"
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0.101-bullseye-slim AS build
+WORKDIR /src
+COPY ["./src/Hermes/Hermes.DataAccess/", "Hermes.DataAccess/"]
+COPY ["./src/Hermes/Hermes.Models/", "Hermes.Models/"]
+COPY ["./src/Hermes/Hermes/", "Hermes/"]
+
+RUN dotnet restore "Hermes.DataAccess/Hermes.DataAccess.csproj"
+RUN dotnet restore "Hermes.Models/Hermes.Models.csproj"
+RUN dotnet restore "Hermes/Hermes.csproj"
+RUN dotnet build "Hermes/Hermes.csproj" -c ReleaseDocker -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Hermes/Hermes.csproj" -c ReleaseDocker -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# Création du répertoire pour les images des consultants
+RUN mkdir -p images/consultantsimg
+ENTRYPOINT ["dotnet", "Hermes.dll"]

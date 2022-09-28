@@ -13,7 +13,7 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#if (RELEASEDOCKER)
+#if RELEASEDOCKER
     string connectionDb = builder.Configuration.GetConnectionString("SqlConnection");
 
     // *** Dans le cas ou une utilisation avec DOCKER
