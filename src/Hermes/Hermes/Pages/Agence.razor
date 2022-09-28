@@ -61,9 +61,10 @@ else
 		    {
 				<ConsultantCard Nom="@consultant.Nom"
 								Prenom="@consultant.Prenom"
-								Image="@consultant.UrlPhoto" />
+								Image="@consultant.UrlPhoto"
+								OnClickConsultant="@(() => viewModel.OpenPageConsultant(consultant.Id))" />
+								
 
-		                @*OnClickPost="@(() => ViewModel.OpenPost(post.Id, post.UrlTitle))" />*@
 		    }
 		
 		</MudStack>

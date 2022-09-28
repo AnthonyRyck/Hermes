@@ -38,6 +38,8 @@ namespace Hermes.DataAccess
 
 		Task<List<Techno>> GetTechnos(List<uint> idsTechnos);
 
+		Task<List<Techno>> GetTechnosByIdConsultant(uint idConsultant);
+
 		#endregion
 
 		#region Competences Table
@@ -45,7 +47,7 @@ namespace Hermes.DataAccess
 
 		Task<List<Competence>> GetCompetences(List<uint> idsCompetences);
 
-		Task<List<uint>> GetCompetencesByIdConsultant(uint idConsultant);
+		Task<List<Competence>> GetCompetencesByIdConsultant(uint idConsultant);
 
 		#endregion
 

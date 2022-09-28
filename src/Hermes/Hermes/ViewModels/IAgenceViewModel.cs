@@ -25,7 +25,7 @@ namespace Hermes.ViewModels
 		/// <returns></returns>
 		Task AddConsultant();
 
-		void OpenPageConsultant(int idConsultant);
+		void OpenPageConsultant(uint idConsultant);
 
 		Task<IEnumerable<string>> SearchByKeyword(string motCle);
 

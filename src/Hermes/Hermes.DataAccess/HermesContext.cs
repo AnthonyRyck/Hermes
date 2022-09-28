@@ -214,6 +214,45 @@ namespace Hermes.DataAccess
 			return technos;
 		}
 
+		public async Task<List<Techno>> GetTechnosByIdConsultant(uint idConsultant)
+		{
+			var commandText = @"SELECT tec.id, tec.nom, tec.commentaire "
+								+ "FROM consultanttechnos ct "
+								+ "INNER JOIN technos tec ON ct.idtechno = tec.id "
+								+ $"WHERE ct.idconsultant = {idConsultant};";
+
+			Func<MySqlCommand, Task<List<Techno>>> funcCmd = async (cmd) =>
+			{
+				List<Techno> techs = new List<Techno>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						techs.Add(new Techno
+						{
+							Id = reader.GetUInt32(0),
+							NomTech = reader.GetString(1),
+							Commentaire = ConvertFromDBVal<string>(reader.GetValue(2))
+						});
+					}
+				}
+
+				return techs;
+			};
+
+			List<Techno> techs = new List<Techno>();
+			try
+			{
+				techs = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return techs;
+		}
+
 		#endregion
 
 		#region Competences Table
@@ -360,9 +399,43 @@ namespace Hermes.DataAccess
 			return competences;
 		}
 
-		public async Task<List<uint>> GetCompetencesByIdConsultant(uint idConsultant)
+		public async Task<List<Competence>> GetCompetencesByIdConsultant(uint idConsultant)
 		{
-			
+			var commandText = @"SELECT comp.id, comp.nom, comp.commentaire "
+								+ " FROM consultantcompetences cc"
+								+ " INNER JOIN competences comp ON cc.idcompetence = comp.id"
+								+ $" WHERE cc.idconsultant = {idConsultant};";
+
+			Func<MySqlCommand, Task<List<Competence>>> funcCmd = async (cmd) =>
+			{
+				List<Competence> competences = new List<Competence>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						competences.Add(new Competence
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Commentaire = ConvertFromDBVal<string>(reader.GetValue(2))
+						});
+					}
+				}
+
+				return competences;
+			};
+
+			List<Competence> competences = new List<Competence>();
+			try
+			{
+				competences = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return competences;
 		}
 		
 		#endregion
@@ -748,7 +821,7 @@ namespace Hermes.DataAccess
 
 		public async Task<Consultant> GetConsultant(uint id)
 		{
-			var commandText = @"SELECT id, nom, prenom, urlphoto "
+			var commandText = @"SELECT id, nom, prenom, urlphoto, minicv "
 			 + $"FROM consultants WHERE id={id};";
 
 			Func<MySqlCommand, Task<Consultant>> funcCmd = async (cmd) =>
@@ -763,7 +836,8 @@ namespace Hermes.DataAccess
 							Id = reader.GetUInt32(0),
 							Nom = reader.GetString(1),
 							Prenom = reader.GetString(2),
-							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3))
+							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3)),
+							MiniCv = ConvertFromDBVal<byte[]>(reader.GetValue(4))
 						};
 					}
 				}

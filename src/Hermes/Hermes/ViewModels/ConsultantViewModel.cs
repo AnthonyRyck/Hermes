@@ -1,4 +1,6 @@
-﻿namespace Hermes.ViewModels
+﻿using Hermes.Models;
+
+namespace Hermes.ViewModels
 {
 	public class ConsultantViewModel : BaseViewModel, IConsultantViewModel
 	{
@@ -24,7 +26,17 @@
 			try
 			{
 				IsLoading = true;
-				ConsultantView = await DbContext.GetAllInfoConsultant(idConsultant);				
+
+				var InfoConsultant = await DbContext.GetConsultant(idConsultant);
+				var comp = await DbContext.GetCompetencesByIdConsultant(idConsultant);
+				var trze = await DbContext.GetTechnosByIdConsultant(idConsultant);
+
+				ConsultantView = new ConsultantViewObject()
+				{
+					InfoConsultant = await DbContext.GetConsultant(idConsultant),
+					Competences = await DbContext.GetCompetencesByIdConsultant(idConsultant),
+					Technos = await DbContext.GetTechnosByIdConsultant(idConsultant)
+				};
 				IsLoading = false;
 			}
 			catch (Exception ex)

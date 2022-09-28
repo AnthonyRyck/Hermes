@@ -69,9 +69,9 @@ namespace Hermes.ViewModels
 			}
 		}
 
-		public async void OpenPageConsultant(int idConsultant)
+		public async void OpenPageConsultant(uint idConsultant)
 		{
-			await JSRuntime.InvokeAsync<object>("open", $"/consultant/{idConsultant}", "_blank");
+			await JSRuntime.InvokeAsync<object>("open", CancellationToken.None, $"/consultant/{idConsultant}", "_blank");
 		}
 
 

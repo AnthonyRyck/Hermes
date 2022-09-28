@@ -1,0 +1,101 @@
+﻿@page "/consultant/{id:int}"
+@attribute [Authorize(Roles = "Admin, Manager")]
+@inject IConsultantViewModel ViewModel
+
+@if(ViewModel.IsLoading)
+{
+	<p>Chargement des informations du consultant...</p>
+	<MudProgressCircular Color="Color.Primary" Style="height:70px;width:70px;" Indeterminate="true" />
+}
+else
+{
+	<MudGrid Justify="Justify.FlexStart">
+		<MudItem xs="3">
+			<MudCard Style="background-color:lightgray">
+				<MudCardContent>
+					<MudCardMedia Image="@ViewModel.ConsultantView.InfoConsultant.UrlPhoto" />
+					<MudText><u>Nom</u> : @ViewModel.ConsultantView.InfoConsultant.Nom</MudText>
+					<MudText><u>Prénom</u> : @ViewModel.ConsultantView.InfoConsultant.Prenom</MudText>
+				</MudCardContent>
+				
+				<MudCardActions>
+					<MudButton Variant="Variant.Text" Color="Color.Primary" Disabled="true">Modifier</MudButton>
+				</MudCardActions>
+			</MudCard>
+		</MudItem>
+
+		<MudItem>
+			<MudCard Style="background-color:lightgray">
+				<MudCardHeader>
+					<CardHeaderContent>
+						<MudText Typo="Typo.h5">Technos</MudText>
+					</CardHeaderContent>
+					<CardHeaderActions>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" Disabled="true" />
+					</CardHeaderActions>
+				</MudCardHeader>
+				<MudCardContent>
+					@if (ViewModel.ConsultantView.Technos.Count == 0)
+					{
+						<MudText Align="Align.Center" Typo="Typo.h6">Aucune techno sélectionnée</MudText>
+					}
+					else
+					{
+						@foreach (var tech in ViewModel.ConsultantView.Technos)
+						{
+							<MudTooltip Text="@tech.Commentaire">
+								<MudChip Color="Color.Success">@tech.NomTech</MudChip>
+							</MudTooltip>
+						}
+					}
+				</MudCardContent>
+			</MudCard>
+		</MudItem>
+
+		<MudItem>
+			<MudCard Style="background-color:lightgray">
+				<MudCardHeader>
+					<CardHeaderContent>
+						<MudText Typo="Typo.h5">Compétences</MudText>
+					</CardHeaderContent>
+					<CardHeaderActions>
+						<MudIconButton Icon="@Icons.Material.Filled.Edit" Color="Color.Default" Disabled="true" />
+					</CardHeaderActions>
+				</MudCardHeader>
+				<MudCardContent>
+					@if (ViewModel.ConsultantView.Competences.Count == 0)
+					{
+						<MudText Align="Align.Center" Typo="Typo.h6">Aucune compétence sélectionnée</MudText>
+					}
+					else
+					{
+						@foreach (var comp in ViewModel.ConsultantView.Competences)
+						{
+							<MudTooltip Text="@comp.Commentaire">
+								<MudChip Color="Color.Info">@comp.Nom</MudChip>
+							</MudTooltip>
+						}
+					}
+					
+					
+				</MudCardContent>
+			</MudCard>
+		</MudItem>
+
+	</MudGrid>
+
+	<MudGrid Justify="Justify.FlexStart">
+
+	</MudGrid>
+}
+
+@code {
+
+	[Parameter]
+	public int id { get; set; }
+
+	protected override async Task OnParametersSetAsync()
+	{
+		await ViewModel.LoadConsultant(Convert.ToUInt32(id));
+	}
+}
