@@ -36,10 +36,16 @@ namespace Hermes.DataAccess
 
 		Task<List<Techno>> LoadTechnos();
 
+		Task<List<Techno>> GetTechnos(List<uint> idsTechnos);
+
 		#endregion
 
 		#region Competences Table
 		Task<List<Competence>> LoadCompetences();
+
+		Task<List<Competence>> GetCompetences(List<uint> idsCompetences);
+
+		Task<List<uint>> GetCompetencesByIdConsultant(uint idConsultant);
 
 		#endregion
 
@@ -64,6 +70,8 @@ namespace Hermes.DataAccess
 		Task<List<uint>> GetConsultantByCompetence(IEnumerable<uint> idsComp);
 
 		Task<List<uint>> GetConsultantByTechno(IEnumerable<uint> idsTechno);
+
+		Task<Consultant> GetConsultant(uint id);
 
 		#endregion
 	}

@@ -65,8 +65,9 @@ builder.Services.AddScoped<IUsersViewModel, UsersViewModel>();
 builder.Services.AddScoped<ITechnosViewModel, TechnosViewModel>();
 builder.Services.AddScoped<ICompetenceViewModel, CompetenceViewModel>();
 builder.Services.AddScoped<ISocieteViewModel, SocieteViewModel>();
-builder.Services.AddScoped<IConsultantViewModel, ConsultantViewModel>();
+builder.Services.AddScoped<IAgenceViewModel, AgenceViewModel>();
 builder.Services.AddScoped<INouveauConsultantViewModel, NouveauConsultantViewModel>();
+builder.Services.AddScoped<IConsultantViewModel, ConsultantViewModel>();
 
 // Augmentation de la taille des messages pour les images.
 builder.Services.AddSignalR(e => {

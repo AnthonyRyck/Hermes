@@ -1,6 +1,5 @@
 ﻿using Hermes.Models;
 using MySqlConnector;
-using System.Reflection.Metadata;
 
 namespace Hermes.DataAccess
 {
@@ -152,10 +151,73 @@ namespace Hermes.DataAccess
 			}
 		}
 
+		/// <summary>
+		/// Charge les informations des technos demandées
+		/// </summary>
+		/// <param name="idsTechnos"></param>
+		/// <returns></returns>
+		public async Task<List<Techno>> GetTechnos(List<uint> idsTechnos)
+		{
+			string commandText = string.Empty;
+
+			// Aucun Techno dans la liste
+			if (idsTechnos.Count == 0)
+			{
+				return new List<Techno>();
+			}
+
+			if (idsTechnos.Count > 1)
+			{
+				string ids = string.Join(",", idsTechnos);
+
+				commandText = @"SELECT id, nom, commentaire "
+				 + "FROM technos "
+				 + $"WHERE id IN ({ids});";
+			}
+			else
+			{
+				commandText = @"SELECT id, nom, commentaire "
+				 + "FROM technos "
+				 + $"WHERE id = {idsTechnos[0]};";
+			}
+
+			Func<MySqlCommand, Task<List<Techno>>> funcCmd = async (cmd) =>
+			{
+				List<Techno> technos = new List<Techno>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						technos
+						.Add(new Techno
+						{
+							Id = reader.GetUInt32(0),
+							NomTech = reader.GetString(1),
+							Commentaire = reader.GetString(2)
+						});
+					}
+				}
+
+				return technos;
+			};
+
+			List<Techno> technos = new List<Techno>();
+			try
+			{
+				technos = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return technos;
+		}
+
 		#endregion
 
 		#region Competences Table
-		
+
 		public async Task<List<Competence>> LoadCompetences()
 		{
 			var commandText = @"SELECT id, nom, commentaire "
@@ -240,10 +302,73 @@ namespace Hermes.DataAccess
 			}
 		}
 
+		public async Task<List<Competence>> GetCompetences(List<uint> idsCompetences)
+		{
+			string commandText = string.Empty;
+
+			// Aucune compétence dans la liste
+			if (idsCompetences.Count == 0)
+			{
+				return new List<Competence>();
+			}
+
+			if (idsCompetences.Count > 1)
+			{
+				string ids = string.Join(",", idsCompetences);
+
+				commandText = @"SELECT id, nom, commentaire "
+				 + "FROM competences "
+				 + $"WHERE id IN ({ids});";
+			}
+			else
+			{
+				commandText = @"SELECT id, nom, commentaire "
+				 + "FROM competences "
+				 + $"WHERE id = {idsCompetences[0]};";
+			}
+
+			Func<MySqlCommand, Task<List<Competence>>> funcCmd = async (cmd) =>
+			{
+				List<Competence> competences = new List<Competence>();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						competences
+						.Add(new Competence
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Commentaire = reader.GetString(2)
+						});
+					}
+				}
+
+				return competences;
+			};
+
+			List<Competence> competences = new List<Competence>();
+			try
+			{
+				competences = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return competences;
+		}
+
+		public async Task<List<uint>> GetCompetencesByIdConsultant(uint idConsultant)
+		{
+			
+		}
+		
 		#endregion
 
 		#region Societes Table
-		
+
 		public async Task<List<Societe>> LoadSocietes()
 		{
 			var commandText = @"SELECT id, nom, commentaire "
@@ -621,6 +746,44 @@ namespace Hermes.DataAccess
 			return consultantsWithTechno;
 		}
 
+		public async Task<Consultant> GetConsultant(uint id)
+		{
+			var commandText = @"SELECT id, nom, prenom, urlphoto "
+			 + $"FROM consultants WHERE id={id};";
+
+			Func<MySqlCommand, Task<Consultant>> funcCmd = async (cmd) =>
+			{
+				Consultant consultantSelected = new Consultant();
+				using (var reader = await cmd.ExecuteReaderAsync())
+				{
+					while (reader.Read())
+					{
+						consultantSelected = new Consultant
+						{
+							Id = reader.GetUInt32(0),
+							Nom = reader.GetString(1),
+							Prenom = reader.GetString(2),
+							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3))
+						};
+					}
+				}
+
+				return consultantSelected;
+			};
+
+			Consultant consultantSelected = new Consultant();
+			try
+			{
+				consultantSelected = await GetCoreAsync(commandText, funcCmd);
+			}
+			catch (Exception)
+			{
+				throw;
+			}
+
+			return consultantSelected;
+		}
+
 		#endregion
 
 		#region Private methods
@@ -711,10 +874,12 @@ namespace Hermes.DataAccess
 		}
 
 
-		private string ToStringList(IEnumerable<uint> ids)
-		{
-			return string.Join(",", ids);
-		}
+		
+		
+
+		
+
+
 
 		#endregion
 	}
