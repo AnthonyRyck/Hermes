@@ -14,7 +14,7 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 #if RELEASEDOCKER
-    string connectionDb = builder.Configuration.GetConnectionString("SqlConnection");
+    string connectionDb = builder.Configuration.GetConnectionString("DockerConnection");
 
     // *** Dans le cas ou une utilisation avec DOCKER
     string databaseAddress = Environment.GetEnvironmentVariable("DB_HOST");
@@ -31,7 +31,7 @@ var builder = WebApplication.CreateBuilder(args);
 #elif DEBUG
 string connectionDb = "server=127.0.0.1;port=3305;user id=root;password=PassHermesDb;database=hermesdb";
 #else
-	string connectionDb = builder.Configuration.GetConnectionString("SqlConnection");
+string connectionDb = builder.Configuration.GetConnectionString("MySqlConnection");
 #endif
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>

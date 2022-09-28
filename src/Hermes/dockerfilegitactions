@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/aspnet:6.0.1-bullseye-slim AS base
+FROM mcr.microsoft.com/dotnet/aspnet:6.0.9-bullseye-slim AS base
 WORKDIR /app
 EXPOSE 80
 
@@ -7,7 +7,7 @@ ENV LOGIN_DB="YourLogin"
 ENV PASSWORD_DB="YourPassword"
 ENV DB_NAME="YourDbName"
 
-FROM mcr.microsoft.com/dotnet/sdk:6.0.101-bullseye-slim AS build
+FROM mcr.microsoft.com/dotnet/sdk:6.0.401-bullseye-slim AS build
 WORKDIR /src
 COPY ["./src/Hermes/Hermes.DataAccess/", "Hermes.DataAccess/"]
 COPY ["./src/Hermes/Hermes.Models/", "Hermes.Models/"]
