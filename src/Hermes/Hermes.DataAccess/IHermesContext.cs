@@ -9,6 +9,8 @@ namespace Hermes.DataAccess
 {
 	public interface IHermesContext
 	{
+		Task CreateTablesAsync(string pathFileSql);
+
 		#region Toutes les méthodes Add des tables
 
 		Task Add(Techno nouvelleTechno);

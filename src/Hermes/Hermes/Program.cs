@@ -1,13 +1,11 @@
 using Hermes.Areas.Identity;
 using Hermes.Data;
-using Hermes.DataAccess;
 using Hermes.ViewModels;
 using Hermes.ViewModels.Settings;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
-using MudBlazor;
 using MudBlazor.Services;
 using System.Globalization;
 
@@ -23,13 +21,14 @@ var builder = WebApplication.CreateBuilder(args);
     string dbName = Environment.GetEnvironmentVariable("DB_NAME");
 	string numPort = Environment.GetEnvironmentVariable("NUM_PORT");
 
-    connectionDb = connectionDb.Replace("USERNAME", login)
+connectionDb = connectionDb.Replace("USERNAME", login)
                             .Replace("YOURPASSWORD", mdp)
                             .Replace("YOURDB", dbName)
                             .Replace("YOURDATABASE", databaseAddress)
 							.Replace("YOURPORT", numPort);
+
 #elif DEBUG
-string connectionDb = "server=127.0.0.1;port=3305;user id=root;password=PassHermesDb;database=hermesdb";
+string connectionDb = "server=127.0.0.1;port=3305;user id=root;password=PassHermesDb;database=ploufdb";
 #else
 string connectionDb = builder.Configuration.GetConnectionString("MySqlConnection");
 #endif
@@ -116,7 +115,7 @@ using (var scope = scopeFactory.CreateScope())
 	var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
 	var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 
-	var hermesCtx = scope.ServiceProvider.GetService<HermesContext>();
+	var hermesCtx = scope.ServiceProvider.GetService<IHermesContext>();
 
 	// Vrai si la base de données est créée, false si elle existait déjà.
 	if (db.Database.EnsureCreated())
