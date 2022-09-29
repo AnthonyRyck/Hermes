@@ -6,6 +6,7 @@ ENV DB_HOST="YourAddressdatabase"
 ENV LOGIN_DB="YourLogin"
 ENV PASSWORD_DB="YourPassword"
 ENV DB_NAME="YourDbName"
+ENV NUM_PORT=8080
 
 FROM mcr.microsoft.com/dotnet/sdk:6.0.401-bullseye-slim AS build
 WORKDIR /src
@@ -16,10 +17,10 @@ COPY ["./src/Hermes/Hermes/", "Hermes/"]
 RUN dotnet restore "Hermes.DataAccess/Hermes.DataAccess.csproj"
 RUN dotnet restore "Hermes.Models/Hermes.Models.csproj"
 RUN dotnet restore "Hermes/Hermes.csproj"
-RUN dotnet build "Hermes/Hermes.csproj" -c ReleaseDocker -o /app/build
+RUN dotnet build "Hermes/Hermes.csproj" -c Release -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "Hermes/Hermes.csproj" -c ReleaseDocker -o /app/publish
+RUN dotnet publish "Hermes/Hermes.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app

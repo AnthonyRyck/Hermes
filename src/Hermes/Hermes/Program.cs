@@ -13,7 +13,7 @@ using System.Globalization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-#if RELEASEDOCKER
+#if RELEASE
     string connectionDb = builder.Configuration.GetConnectionString("DockerConnection");
 
     // *** Dans le cas ou une utilisation avec DOCKER
