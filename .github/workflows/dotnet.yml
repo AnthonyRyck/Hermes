@@ -1,0 +1,20 @@
+name: Deploy to DockerHub with Latest tag
+
+on:
+  # Lancement manuel
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: "Créer une image docker"
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Build image
+        run: docker build --file ./src/Hermes/dockerfilegitactions --tag anthonyryck/hermes:latest .
+      - name: Login to DockerHub
+        run: echo ${{ secrets.DOCKERHUB_TOKEN }} | docker login --username anthonyryck --password-stdin
+      - name: Push to DockerHub
+        run: docker push anthonyryck/hermes:latest
