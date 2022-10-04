@@ -12,14 +12,15 @@ using System.Globalization;
 var builder = WebApplication.CreateBuilder(args);
 
 #if RELEASE
-    string connectionDb = builder.Configuration.GetConnectionString("DockerConnection");
 
-    // *** Dans le cas ou une utilisation avec DOCKER
-    string databaseAddress = Environment.GetEnvironmentVariable("DB_HOST");
-    string login = Environment.GetEnvironmentVariable("LOGIN_DB");
-    string mdp = Environment.GetEnvironmentVariable("PASSWORD_DB");
-    string dbName = Environment.GetEnvironmentVariable("DB_NAME");
-	string numPort = Environment.GetEnvironmentVariable("NUM_PORT");
+string connectionDb = "server=YOURDATABASE;port=YOURPORT;user id=USERNAME;password=YOURPASSWORD;database=YOURDB";
+
+// *** Dans le cas ou une utilisation avec DOCKER
+string databaseAddress = Environment.GetEnvironmentVariable("DB_HOST");
+string login = Environment.GetEnvironmentVariable("LOGIN_DB");
+string mdp = Environment.GetEnvironmentVariable("PASSWORD_DB");
+string dbName = Environment.GetEnvironmentVariable("DB_NAME");
+string numPort = Environment.GetEnvironmentVariable("NUM_PORT");
 
 connectionDb = connectionDb.Replace("USERNAME", login)
                             .Replace("YOURPASSWORD", mdp)
@@ -27,11 +28,19 @@ connectionDb = connectionDb.Replace("USERNAME", login)
                             .Replace("YOURDATABASE", databaseAddress)
 							.Replace("YOURPORT", numPort);
 
+Console.WriteLine(connectionDb);
+
 #elif DEBUG
-string connectionDb = "server=127.0.0.1;port=3305;user id=root;password=PassHermesDb;database=ploufdb";
+
+// IIS Express Debug
+string connectionDb = "server=127.0.0.1;port=3305;user id=root;password=PassHermesDb;database=hermesdb";
+// Change IP (your real machine IP) if you use Docker Debug.
+
+
 #else
 string connectionDb = builder.Configuration.GetConnectionString("MySqlConnection");
 #endif
+
 
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 	options.UseMySql(connectionDb, ServerVersion.AutoDetect(connectionDb)));
@@ -108,21 +117,19 @@ app.MapBlazorHub();
 app.MapFallbackToPage("/_Host");
 
 // Ajout dans la base de l'utilisateur "root"
-var scopeFactory = app.Services.GetRequiredService<IServiceScopeFactory>();
-using (var scope = scopeFactory.CreateScope())
+using (var scope = app.Services.CreateScope())
 {
 	var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-	var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-	var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-	var hermesCtx = scope.ServiceProvider.GetService<IHermesContext>();
 
 	// Vrai si la base de données est créée, false si elle existait déjà.
 	if (db.Database.EnsureCreated())
 	{
+		var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+		var userManager = scope.ServiceProvider.GetRequiredService<UserManager<IdentityUser>>();
 		DataInitializer.InitData(roleManager, userManager).Wait();
-
+		
 		// Pour créer le schéma de la base
+		var hermesCtx = scope.ServiceProvider.GetService<IHermesContext>();
 		string pathSql = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Scripts", "ConsultantsDb.sql");
 		await hermesCtx.CreateTablesAsync(pathSql);
 	}
@@ -151,7 +158,6 @@ if (!Directory.Exists(pathImages))
 string pathConsultantsImg = Path.Combine(pathImages, ConstantesHermes.IMG_CONSULTANTS);
 if (!Directory.Exists(pathConsultantsImg))
 	Directory.CreateDirectory(pathConsultantsImg);
-
 
 app.UseStaticFiles(new StaticFileOptions
 {
