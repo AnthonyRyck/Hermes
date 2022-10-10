@@ -22,6 +22,8 @@ nom varchar(100) not null,
 prenom varchar(100) not null,
 urlphoto varchar(100),
 minicv mediumblob,
+lastupdatecv datetime,
+filename varchar(100),
 primary key(id));
 
 CREATE TABLE IF NOT EXISTS consultantcompetences

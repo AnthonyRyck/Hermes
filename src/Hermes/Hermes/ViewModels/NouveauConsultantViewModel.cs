@@ -38,12 +38,13 @@ namespace Hermes.ViewModels
 
 		public string UrlPhoto { get; private set; }
 
-		
+		public string FileName { get; private set; }
+
 		public IEnumerable<string> Technos { get; private set; }
 
 		public List<Techno> TechnoSelected { get; private set; }
 
-
+		
 		public IEnumerable<string> Competences { get; private set; }
 		public List<Competence> CompetencesSelected { get; private set; }
 
@@ -150,6 +151,8 @@ namespace Hermes.ViewModels
 
 		#endregion
 
+		#region Ajout de la photo
+		
 		public async Task UploadPhoto(InputFileChangeEventArgs e)
 		{
 			IBrowserFile file = e.File;
@@ -170,9 +173,7 @@ namespace Hermes.ViewModels
 			}
 			else
 			{
-				Notification.Clear();
-				Notification.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
-				Notification.Add("Je suis là", Severity.Info);
+				Notification.Add("Le format de la photo doit être au format jpg, jpeg ou png", Severity.Error);
 			}
 		}
 
@@ -198,6 +199,9 @@ namespace Hermes.ViewModels
 				if (CompetencesSelected.Any())
 					await DbContext.AddCompetenceToConsultant(newConsultant.Id, CompetencesSelected.Select(x => x.Id).ToList());
 
+				if (DossierCompetence != null)
+					await DbContext.UpdateDossierCompetence(newConsultant.Id, DossierCompetence, FileName, DateTime.Now);
+
 				Success($"Consultant {newConsultant.Nom} {newConsultant.Prenom} ajouté");
 				InitData();
 			}
@@ -207,6 +211,41 @@ namespace Hermes.ViewModels
 			}
 		}
 
+		#endregion
+
+		#region Ajout du dossier de compétence
+
+		private byte[] DossierCompetence;
+
+		public async Task UploadMiniCv(InputFileChangeEventArgs e)
+		{
+			IBrowserFile file = e.File;
+
+			if (file.ContentType == ConstantesHermes.MIME_PDF)
+			{
+				if (file.Size < ConstantesHermes.MAX_SIZE_PHOTO)
+				{
+					var sourceStream = file.OpenReadStream(file.Size + 1000);
+					DossierCompetence = new byte[file.Size];
+					await sourceStream.ReadAsync(DossierCompetence, 0, (int)file.Size);
+					FileName = file.Name; 
+
+					StateHasChanged.Invoke();
+				}
+				else
+				{
+					Notification.Add("La taille du fichier PDF doit être inférieur à 10 Mo", Severity.Error);
+				}
+			}
+			else
+			{
+				Notification.Clear();
+				Notification.Configuration.PositionClass = Defaults.Classes.Position.BottomRight;
+				Notification.Add("Le fichier doit être au format PDF", Severity.Info);
+			}
+		}
+		
+		#endregion
 
 		public void Cancel()
 		{
@@ -260,7 +299,6 @@ namespace Hermes.ViewModels
 			return pathImg;
 		}
 
-
 		private string RenameTempPhoto(uint id)
 		{
 			string extension = Path.GetExtension(UrlPhoto);
@@ -289,13 +327,7 @@ namespace Hermes.ViewModels
 			}
 		}
 
-
-
-
-
-
-
 		#endregion
-
+		
 	}
 }

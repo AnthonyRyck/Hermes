@@ -37,6 +37,10 @@ namespace Hermes.ViewModels
 
 		Task UploadPhoto(InputFileChangeEventArgs e);
 
+		Task UploadMiniCv(InputFileChangeEventArgs e);
+
+		string FileName { get; }
+
 		Task Add();
 
 		void Cancel();

@@ -22,9 +22,29 @@
                           Disabled="@viewModel.IsLoading"
                               HelperText="Prénom"
                               Variant="Variant.Outlined"></MudTextField>
+
+                <InputFile id="miniCv"
+                       OnChange="viewModel.UploadMiniCv"
+                       hidden
+                       accept=".pdf" />
+
+                <MudTooltip Text="Ajout du dossier de compétence">
+                    <MudIconButton HtmlTag="label"
+                                   Color="Color.Primary"
+                                    Size="Size.Large"
+                                   Icon="@Icons.Filled.AttachFile"
+                                    for="miniCv" />
+								
+                @if (!string.IsNullOrEmpty(viewModel.FileName))
+				{
+                    @viewModel.FileName
+                }
+                </MudTooltip>
+                
             </MudItem>
 
             <MudItem xs="1">
+                
                 <InputFile id="photoInput"
                            OnChange="viewModel.UploadPhoto"
                            hidden

@@ -1,5 +1,6 @@
 ﻿using Hermes.Models;
 using MySqlConnector;
+using System.Formats.Asn1;
 
 namespace Hermes.DataAccess
 {
@@ -745,6 +746,26 @@ namespace Hermes.DataAccess
 			catch (Exception)
 			{
 				throw;
+			}
+		}
+
+		public async Task UpdateDossierCompetence(uint id, byte[] dossierCompetence, string filename, DateTime update)
+		{
+			using (var conn = new MySqlConnection(ConnectionString))
+			{
+				var commandUpdateCompetence = @$"UPDATE consultants SET minicv=@dossierCompetence, filename=@file, lastupdatecv=@lastupdate"
+									  + $" WHERE id={id};";
+
+				using (var cmd = new MySqlCommand(commandUpdateCompetence, conn))
+				{
+					cmd.Parameters.AddWithValue("@dossierCompetence", dossierCompetence);
+					cmd.Parameters.AddWithValue("@file", filename);
+					cmd.Parameters.AddWithValue("@lastupdate", update);
+
+					conn.Open();
+					await cmd.ExecuteNonQueryAsync();
+					conn.Close();
+				}
 			}
 		}
 

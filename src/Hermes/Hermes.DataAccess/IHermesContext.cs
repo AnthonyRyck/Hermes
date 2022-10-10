@@ -77,6 +77,8 @@ namespace Hermes.DataAccess
 
 		Task<Consultant> GetConsultant(uint id);
 
-		#endregion
-	}
+		Task UpdateDossierCompetence(uint id, byte[] dossierCompetence, string filename, DateTime update);
+
+        #endregion
+    }
 }

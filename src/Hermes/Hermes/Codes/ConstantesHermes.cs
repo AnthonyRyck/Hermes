@@ -26,12 +26,14 @@ namespace Hermes.Codes
 
 		#endregion
 
-		#region MIME Types Images
+		#region MIME Types
 
 		public const string MIME_JPG = "image/jpg";
 		public const string MIME_JPEG = "image/jpeg";
 		public const string MIME_GIF = "image/gif";
 		public const string MIME_PNG = "image/png";
+		
+		public const string MIME_PDF = "application/pdf";
 
 		#endregion
 
