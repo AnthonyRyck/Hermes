@@ -16,6 +16,18 @@ else
 					<MudCardMedia Image="@ViewModel.ConsultantView.InfoConsultant.UrlPhoto" />
 					<MudText><u>Nom</u> : @ViewModel.ConsultantView.InfoConsultant.Nom</MudText>
 					<MudText><u>Prénom</u> : @ViewModel.ConsultantView.InfoConsultant.Prenom</MudText>
+
+					@if(string.IsNullOrEmpty(ViewModel.ConsultantView.InfoConsultant.FileName))
+					{
+						<MudText><i>Aucun dossier de compétence.</i></MudText>
+					}
+					else
+					{
+						<MudFab StartIcon="@Icons.Filled.FileDownload" 
+								Label="Dossier de compétence"
+								Color="Color.Primary"
+								OnClick="@ViewModel.DownloadDossierCompetence" />
+					}
 				</MudCardContent>
 				
 				<MudCardActions>

@@ -842,7 +842,7 @@ namespace Hermes.DataAccess
 
 		public async Task<Consultant> GetConsultant(uint id)
 		{
-			var commandText = @"SELECT id, nom, prenom, urlphoto, minicv "
+			var commandText = @"SELECT id, nom, prenom, urlphoto, filename, lastupdatecv "
 			 + $"FROM consultants WHERE id={id};";
 
 			Func<MySqlCommand, Task<Consultant>> funcCmd = async (cmd) =>
@@ -858,7 +858,8 @@ namespace Hermes.DataAccess
 							Nom = reader.GetString(1),
 							Prenom = reader.GetString(2),
 							UrlPhoto = ConvertFromDBVal<string>(reader.GetValue(3)),
-							MiniCv = ConvertFromDBVal<byte[]>(reader.GetValue(4))
+							FileName = ConvertFromDBVal<string>(reader.GetValue(4)),
+							LastUpdate = ConvertFromDBVal<DateTime>(reader.GetValue(5))
 						};
 					}
 				}
@@ -877,6 +878,38 @@ namespace Hermes.DataAccess
 			}
 
 			return consultantSelected;
+		}
+
+
+		public async Task<byte[]> GetDossierCompetence(uint idConsultant)
+		{
+			try
+			{
+				var commandText = @"SELECT minicv, filename "
+				 + $"FROM consultants WHERE id={idConsultant};";
+
+				byte[] dossierCompetence = null;
+				using (var conn = new MySqlConnection(ConnectionString))
+				{
+					MySqlCommand cmd = new MySqlCommand(commandText, conn);
+					conn.Open();
+					
+					using (var reader = await cmd.ExecuteReaderAsync())
+					{
+						while (reader.Read())
+						{
+							dossierCompetence = ConvertFromDBVal<byte[]>(reader.GetValue(0));
+						}
+
+					}
+					
+					return dossierCompetence;
+				}
+			}
+			catch (Exception)
+			{
+				throw;
+			}
 		}
 
 		#endregion
@@ -967,15 +1000,7 @@ namespace Hermes.DataAccess
 
 			return id;
 		}
-
-
-		
-		
-
-		
-
-
-
+				
 		#endregion
 	}
 }

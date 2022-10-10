@@ -11,13 +11,18 @@
 		/// Toutes les informations sur le consultant.
 		/// </summary>
 		ConsultantViewObject ConsultantView { get; }
-
-
+		
 		/// <summary>
 		/// Charge les informations du consultant.
 		/// </summary>
 		/// <param name="idConsultant"></param>
 		/// <returns></returns>
 		Task LoadConsultant(uint idConsultant);
+
+		/// <summary>
+		/// Lance le téléchargement du dossier de compétence.
+		/// </summary>
+		/// <returns></returns>
+		Task DownloadDossierCompetence();
 	}
 }

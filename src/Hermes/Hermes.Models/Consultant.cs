@@ -18,8 +18,8 @@ namespace Hermes.Models
 
 		public byte[] MiniCv { get; set; }
 
-		public DateTime LastUpdate { get; set; }
+		public DateTime? LastUpdate { get; set; }
 		
-		public string FileName { get; set; }
+		public string? FileName { get; set; }
 	}
 }

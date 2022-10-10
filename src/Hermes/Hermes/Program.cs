@@ -1,3 +1,4 @@
+using BlazorDownloadFile;
 using Hermes.Areas.Identity;
 using Hermes.Data;
 using Hermes.ViewModels;
@@ -76,6 +77,9 @@ builder.Services.AddScoped<ISocieteViewModel, SocieteViewModel>();
 builder.Services.AddScoped<IAgenceViewModel, AgenceViewModel>();
 builder.Services.AddScoped<INouveauConsultantViewModel, NouveauConsultantViewModel>();
 builder.Services.AddScoped<IConsultantViewModel, ConsultantViewModel>();
+
+// Pour téléchargement de fichier.
+builder.Services.AddBlazorDownloadFile();
 
 // Augmentation de la taille des messages pour les images.
 builder.Services.AddSignalR(e => {
