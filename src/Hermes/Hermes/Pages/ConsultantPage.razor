@@ -27,6 +27,9 @@ else
 								Label="Dossier de compétence"
 								Color="Color.Primary"
 								OnClick="@ViewModel.DownloadDossierCompetence" />
+						<div>
+							<MudText Typo="Typo.caption"><u>Dernière mise à jour</u> : @ViewModel.ConsultantView.InfoConsultant.LastUpdate?.ToString("d")</MudText>
+						</div>
 					}
 				</MudCardContent>
 				
